@@ -20,43 +20,9 @@ int main() {
     robot.set_speed_bar(rc, 0.3);
     robot.flush(rc);
 
-    std::ifstream file("/home/nrel/aruco/rbpodo/jh_control/data/tcp_pose_log.csv");
-    if (!file.is_open()) {
-      std::cerr << "CSV 파일을 열 수 없습니다!" << std::endl;
-      return 1;
-    }
-
-    std::string line;
-    bool first_line = true;
-
-    while (std::getline(file, line)) {
-      if (first_line) { 
-        first_line = false; 
-        continue;
-      }
-
-      std::stringstream ss(line);
-      std::string token;
-      std::array<double, 6> tcp_pose{};
-      int idx = 0;
-      std::getline(ss, token, ',');
-      while (std::getline(ss, token, ',') && idx < 6) {
-        tcp_pose[idx++] = std::stod(token);
-      }
-
-      if (idx == 6) {
-        std::cout << "Moving to default pose: [";
-        for (int i = 0; i < 6; ++i) {
-          std::cout << tcp_pose[i];
-          if (i < 5) std::cout << ", ";
-        }
-        std::cout << "]" << std::endl;
-
-        robot.move_servo_l(rc, tcp_pose, 0.01, 0.05, 1, 0.05);
-        rc.error().throw_if_not_empty();
-
-      }
-    }
+    std::array<double, 6> tcp_pose = {0, 0, 0, 0, 0, 0};  // 요기에 default pose 정해지면 입력하기!
+    robot.move_l(rc, tcp_pose, 100, 100);
+    rc.error().throw_if_not_empty();
 
     std::cout << "default 자세 완료" << std::endl;
 
