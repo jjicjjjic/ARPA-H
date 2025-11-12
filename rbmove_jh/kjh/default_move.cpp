@@ -10,19 +10,16 @@ using namespace rb;
 
 int main() {
   try {
-    // (1) 로봇 연결
     podo::Cobot robot("10.0.2.7");
     podo::ResponseCollector rc;
 
-    // (2) 시뮬레이션 모드 (실기일 경우 Real로 변경)
     robot.set_operation_mode(rc, podo::OperationMode::Simulation);
+    // robot.set_operation_mode(rc, podo::OperationMode::Real);
     rc.error().throw_if_not_empty();
 
-    // (3) 속도 설정
     robot.set_speed_bar(rc, 0.3);
     robot.flush(rc);
 
-    // (4) CSV 파일 열기
     std::ifstream file("/home/nrel/aruco/rbpodo/jh_control/data/tcp_pose_log.csv");
     if (!file.is_open()) {
       std::cerr << "CSV 파일을 열 수 없습니다!" << std::endl;
@@ -48,7 +45,7 @@ int main() {
       }
 
       if (idx == 6) {
-        std::cout << "Moving to TCP pose: [";
+        std::cout << "Moving to default pose: [";
         for (int i = 0; i < 6; ++i) {
           std::cout << tcp_pose[i];
           if (i < 5) std::cout << ", ";
@@ -61,7 +58,7 @@ int main() {
       }
     }
 
-    std::cout << "CSV 파일 기반 궤적 재생 완료!" << std::endl;
+    std::cout << "default 자세 완료" << std::endl;
 
   } catch (const std::exception& e) {
     std::cerr << e.what() << std::endl;

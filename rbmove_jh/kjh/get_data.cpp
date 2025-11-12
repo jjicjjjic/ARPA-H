@@ -9,7 +9,6 @@
 
 using namespace rb;
 
-// 비동기로 입력을 감지하는 함수
 bool check_quit() {
   std::string input;
   std::getline(std::cin, input);
@@ -31,7 +30,6 @@ int main() {
 
     std::cout << "TCP 자세 기록을 시작합니다. 종료하려면 'q'를 입력 후 Enter를 누르세요.\n";
 
-    // 비동기 입력 감시 시작
     std::future<bool> quit_future = std::async(std::launch::async, check_quit);
 
     while (quit_future.wait_for(std::chrono::milliseconds(1)) == std::future_status::timeout) {
@@ -39,11 +37,10 @@ int main() {
       robot.get_tcp_info(rc, tcp_pose);
       rc.error().throw_if_not_empty();
 
-      // 시간(ms)
+
       auto now = std::chrono::steady_clock::now().time_since_epoch();
       long long ms = std::chrono::duration_cast<std::chrono::milliseconds>(now).count();
 
-      // 파일에 저장
       file << ms << ",";
       for (int j = 0; j < 6; ++j) {
         file << tcp_pose[j];
