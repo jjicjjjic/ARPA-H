@@ -17,6 +17,10 @@
 #define M_PI 3.14159265358979323846
 #endif
 
+#define MIN_VALID_DEPTH 0.1
+#define MAX_VALID_DEPTH 2.0
+
+
 using namespace rb;
 
 std::array<double, 9> eulerToRotationMatrix(double roll, double pitch, double yaw) {
