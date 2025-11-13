@@ -4,7 +4,7 @@
 ###############################################
 ##      Open CV and Numpy integration        ##
 ###############################################
-
+#py3_10/window
 import time    
 import open3d as o3d
 import open3d.visualization.gui as gui
@@ -237,7 +237,7 @@ class RealSenseSceneApp:
             yaw = 0.0
             
             data_string = f"{marker_id},{mouth_position[0]:.4f},{mouth_position[1]:.4f},{mouth_position[2]:.4f}," \
-                          f"{roll:.4f},{pitch[1]:.4f},{yaw[2]:.4f}"
+                          f"{roll:.4f},{pitch:.4f},{yaw:.4f}"
                           
             self.sock.sendto(data_string.encode(), (self.robot_ip, self.robot_port))
 
