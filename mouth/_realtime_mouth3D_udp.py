@@ -5,6 +5,7 @@
 ##      Open CV and Numpy integration        ##
 ###############################################
 #py3_10/window
+#py310/linux
 import time    
 import open3d as o3d
 import open3d.visualization.gui as gui
@@ -39,8 +40,8 @@ if not found_rgb:
     print("The demo requires Depth camera with Color sensor")
     exit(0)
 
-config.enable_stream(rs.stream.depth, 1280, 720, rs.format.z16, 30)
-config.enable_stream(rs.stream.color, 1280, 720, rs.format.bgr8, 30)
+config.enable_stream(rs.stream.depth, 640, 480, rs.format.z16, 30)
+config.enable_stream(rs.stream.color, 640, 480, rs.format.bgr8, 30)
 
 # Start streaming
 profile = pipeline.start(config)
@@ -141,6 +142,7 @@ class RealSenseSceneApp:
                         # print(new_time-self.cur_time)
                         self.cur_time = new_time
                     frames = pipeline.wait_for_frames()
+                    # frames = pipeline.wait_for_frames(timeout_ms=10000)
                     frames = self.align.process(frames)
                     depth_frame = frames.get_depth_frame()
                     color_frame = frames.get_color_frame()
@@ -180,7 +182,8 @@ class RealSenseSceneApp:
                     gui.Application.instance.post_to_main_thread(self.window, self.update_scene)
                     
 
-            except RuntimeError:
+            except RuntimeError as e:
+                print(f"Critical Error: {e}")
                 print("Playback finished or interrupted.")
 
             finally:
