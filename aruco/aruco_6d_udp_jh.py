@@ -1,3 +1,5 @@
+#py310/Linux
+#py3_10/Window
 # aruco_sender.py
 import pyrealsense2 as rs
 import cv2
@@ -45,6 +47,8 @@ try:
             # 데이터 포맷팅: "ID,tvec_x,tvec_y,tvec_z,rvec_x,rvec_y,rvec_z"
             data_string = f"{marker_id},{tvec[0]:.4f},{tvec[1]:.4f},{tvec[2]:.4f}," \
                           f"{rvec[0]:.4f},{rvec[1]:.4f},{rvec[2]:.4f}"
+
+            print(f'Aruco 6D position: {data_string}')
 
             # UDP로 "카메라 기준" 좌표 전송
             sock.sendto(data_string.encode(), (ROBOT_IP, ROBOT_PORT))

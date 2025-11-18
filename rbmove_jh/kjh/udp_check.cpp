@@ -134,7 +134,7 @@ int main() {
         std::array<double, 3> rvec_cam_to_marker = {parsed_data[4], parsed_data[5], parsed_data[6]};
 
         std::cout << "Pos[X,Y,Z]: [" << t_cam_to_marker[0] << ", " << t_cam_to_marker[1] << ", " << t_cam_to_marker[2] << "]" << std::endl;
-        std::cout << "Ori[R,P,Y]: [" <<rvec_cam_to_marker[3] << ", " << rvec_cam_to_marker[4] << ", " <<rvec_cam_to_marker[5] << "]" << std::endl;
+        std::cout << "Ori[R,P,Y]: [" <<rvec_cam_to_marker[0] << ", " << rvec_cam_to_marker[1] << ", " <<rvec_cam_to_marker[2] << "]" << std::endl;
    
 
     }

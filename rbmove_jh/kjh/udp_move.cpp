@@ -271,7 +271,7 @@ int main() {
         std::cout << "Pos[X,Y,Z]: [" << current_commanded_pose[0] << ", " << current_commanded_pose[1] << ", " << current_commanded_pose[2] << "]" << std::endl;
         std::cout << "Ori[R,P,Y]: [" << current_commanded_pose[3] << ", " << current_commanded_pose[4] << ", " << current_commanded_pose[5] << "]" << std::endl;
 
-        robot.move_servo_l(rc, current_commanded_pose, 0.01, 0.05, 1, 0.05);
+        // robot.move_servo_l(rc, current_commanded_pose, 0.01, 0.05, 1, 0.05);
         rc.error().throw_if_not_empty();
     }
     
