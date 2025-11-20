@@ -13,14 +13,14 @@ int main() {
     podo::Cobot robot("10.0.2.7");
     podo::ResponseCollector rc;
 
-    robot.set_operation_mode(rc, podo::OperationMode::Simulation);
-    // robot.set_operation_mode(rc, podo::OperationMode::Real);
+    // robot.set_operation_mode(rc, podo::OperationMode::Simulation);
+    robot.set_operation_mode(rc, podo::OperationMode::Real);
     rc.error().throw_if_not_empty();
 
     robot.set_speed_bar(rc, 0.3);
     robot.flush(rc);
 
-    std::array<double, 6> tcp_pose = {0, 0, 0, 0, 0, 0};  // 요기에 default pose 정해지면 입력하기!
+    std::array<double, 6> tcp_pose = {148, 348, 790, 90, 0, 90};  // 요기에 default pose 정해지면 입력하기!
     robot.move_l(rc, tcp_pose, 100, 100);
     rc.error().throw_if_not_empty();
 

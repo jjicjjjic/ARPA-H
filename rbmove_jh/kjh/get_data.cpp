@@ -20,7 +20,7 @@ int main() {
     podo::Cobot robot("10.0.2.7");
     podo::ResponseCollector rc;
 
-    std::ofstream file("/home/nrel/aruco/rbpodo/jh_control/data/tcp_pose_log.csv");
+    std::ofstream file("/home/nrel/ARPA-H/rbmove_jh/kjh/data/cushion_back.csv");
     if (!file.is_open()) {
       std::cerr << "파일을 열 수 없습니다." << std::endl;
       return 1;
