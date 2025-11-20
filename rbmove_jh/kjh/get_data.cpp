@@ -20,7 +20,39 @@ int main() {
     podo::Cobot robot("10.0.2.7");
     podo::ResponseCollector rc;
 
-    std::ofstream file("/home/nrel/ARPA-H/rbmove_jh/kjh/data/cushion_back.csv");
+    std::ofstream file("/home/nrel/ARPA-H/rbmove_jh/kjh/data/tcp_pose_log.csv");
+    //meal
+    // std::ofstream file("/home/nrel/ARPA-H/rbmove_jh/kjh/data/meal/d_s.csv");
+    // std::ofstream file("/home/nrel/ARPA-H/rbmove_jh/kjh/data/meal/s_f.csv");
+    // std::ofstream file("/home/nrel/ARPA-H/rbmove_jh/kjh/data/meal/f.csv");
+    // std::ofstream file("/home/nrel/ARPA-H/rbmove_jh/kjh/data/meal/f_m.csv");
+    // std::ofstream file("/home/nrel/ARPA-H/rbmove_jh/kjh/data/meal/m_f2.csv");
+    // std::ofstream file("/home/nrel/ARPA-H/rbmove_jh/kjh/data/meal/f2.csv");
+    // std::ofstream file("/home/nrel/ARPA-H/rbmove_jh/kjh/data/meal/f2_m.csv");
+    // std::ofstream file("/home/nrel/ARPA-H/rbmove_jh/kjh/data/meal/m_f3.csv");
+    // std::ofstream file("/home/nrel/ARPA-H/rbmove_jh/kjh/data/meal/f3.csv");
+    // std::ofstream file("/home/nrel/ARPA-H/rbmove_jh/kjh/data/meal/f3_m.csv");
+    // std::ofstream file("/home/nrel/ARPA-H/rbmove_jh/kjh/data/meal/fix_d.csv");
+    // //comoral
+    // std::ofstream file("/home/nrel/ARPA-H/rbmove_jh/kjh/data/comoral/d_c.csv");
+    // std::ofstream file("/home/nrel/ARPA-H/rbmove_jh/kjh/data/comoral/c_m.csv");
+    // std::ofstream file("/home/nrel/ARPA-H/rbmove_jh/kjh/data/comoral/f_c.csv");
+    // std::ofstream file("/home/nrel/ARPA-H/rbmove_jh/kjh/data/comoral/c_d.csv");
+    // //position change
+    // std::ofstream file("/home/nrel/ARPA-H/rbmove_jh/kjh/data/position/default_cushion.csv");
+    // std::ofstream file("/home/nrel/ARPA-H/rbmove_jh/kjh/data/position/cushion_back.csv");
+    // std::ofstream file("/home/nrel/ARPA-H/rbmove_jh/kjh/data/position/back_cushion2.csv");
+    // std::ofstream file("/home/nrel/ARPA-H/rbmove_jh/kjh/data/position/cushion2_back.csv");
+    // std::ofstream file("/home/nrel/ARPA-H/rbmove_jh/kjh/data/position/back_default.csv");
+    // //falling_detection
+    // std::ofstream file("/home/nrel/ARPA-H/rbmove_jh/kjh/data/fall/fp1.csv");
+    // std::ofstream file("/home/nrel/ARPA-H/rbmove_jh/kjh/data/fall/fp1_d.csv");
+    // std::ofstream file("/home/nrel/ARPA-H/rbmove_jh/kjh/data/fall/fp2.csv");
+    // std::ofstream file("/home/nrel/ARPA-H/rbmove_jh/kjh/data/fall/fp2_d.csv");
+    // std::ofstream file("/home/nrel/ARPA-H/rbmove_jh/kjh/data/fall/fp3.csv");
+    // std::ofstream file("/home/nrel/ARPA-H/rbmove_jh/kjh/data/fall/fp3_d.csv");
+
+
     if (!file.is_open()) {
       std::cerr << "파일을 열 수 없습니다." << std::endl;
       return 1;
@@ -48,7 +80,7 @@ int main() {
       }
       file << "\n";
 
-      std::this_thread::sleep_for(std::chrono::milliseconds(100));  // 10Hz 기록
+      std::this_thread::sleep_for(std::chrono::milliseconds(10));  // 10Hz 기록
     }
 
     file.close();

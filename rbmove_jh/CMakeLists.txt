@@ -1,5 +1,5 @@
 # 1. 'jh_control' 폴더 안에 있는 모든 .cpp 파일의 목록을 찾아서 'CPP_FILES'라는 변수에 저장합니다.
-file(GLOB CPP_FILES "kjh/*.cpp")
+file(GLOB_RECURSE CPP_FILES "kjh/*.cpp")
 
 # 2. 찾은 파일 목록을 하나씩 순회하면서 반복합니다.
 foreach(CPP_FILE ${CPP_FILES})

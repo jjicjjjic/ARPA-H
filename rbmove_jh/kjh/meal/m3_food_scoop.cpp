@@ -20,11 +20,11 @@ int main() {
     rc.error().throw_if_not_empty();
 
     // (3) 속도 설정
-    robot.set_speed_bar(rc, 0.1);
+    // robot.set_speed_bar(rc, 0.05);
     robot.flush(rc);
 
     // (4) CSV 파일 열기
-    std::ifstream file("/home/nrel/ARPA-H/rbmove_jh/kjh/data/cushion_back.csv");
+    std::ifstream file("/home/nrel/ARPA-H/rbmove_jh/kjh/data/meal/f.csv");
     if (!file.is_open()) {
       std::cerr << "CSV 파일을 열 수 없습니다!" << std::endl;
       return 1;
@@ -56,8 +56,8 @@ int main() {
         }
         std::cout << "]" << std::endl;
 
-        robot.move_servo_l(rc, tcp_pose, 0.05, 0.05, 1, 0.05);
-        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        robot.move_servo_l(rc, tcp_pose, 0.2, 0.05, 1, 0.05);
+        std::this_thread::sleep_for(std::chrono::milliseconds(20));
         rc.error().throw_if_not_empty();
 
       }
