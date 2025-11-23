@@ -77,15 +77,15 @@ int main() {
     podo::Cobot robot("10.0.2.7");
     podo::ResponseCollector rc;
 
-    // robot.set_operation_mode(rc, podo::OperationMode::Real);
-    robot.set_operation_mode(rc, podo::OperationMode::Simulation);
+    robot.set_operation_mode(rc, podo::OperationMode::Real);
+    // robot.set_operation_mode(rc, podo::OperationMode::Simulation);
     rc = rc.error().throw_if_not_empty();
 
     // 속도 설정
     robot.set_speed_bar(rc, 0.3);
     robot.flush(rc);
 
-    const std::array<double, 3> t_tcp_to_camera = {0.010, -0.029, 0.048}; 
+    const std::array<double, 3> t_tcp_to_camera = {0.00, -0.025, 0.050}; 
     const std::array<double, 9> R_tcp_to_camera = {
         -1, 0, 0,
         0, -1, 0,
@@ -173,10 +173,24 @@ int main() {
             continue; 
         }
 
+        double target_depth = 0.15; // 15cm
+        double depth_error = std::abs(parsed_data[3] - target_depth); // 거리 오차
+        double x_error = std::abs(parsed_data[1]); // 좌우 오차
+        double y_error = std::abs(parsed_data[2]); // 상하 오차
+
+        // 허용 오차: 1cm (0.01m)
+        // 이 범위 안으로 들어오면 로봇에게 새로운 명령을 보내지 않고 현 위치를 유지합니다.
+        if (depth_error < 0.01 && x_error < 0.01 && y_error < 0.01) {
+            std::cout << ">>> Target Reached! (Dist Err: " << depth_error * 1000 << "mm) - STOPPING <<<" << std::endl;
+            
+            // 로봇을 강제로 멈추거나, 이전 명령을 유지하기 위해 루프의 나머지 계산을 건너뜁니다.
+            continue; 
+        }
+
         // ===================================================================
         // ===== [누락된 부분 1] UDP 데이터 -> 변수 할당 =====
         // ===================================================================
-        std::array<double, 3> t_cam_to_marker = {parsed_data[1], parsed_data[2], parsed_data[3]};
+        std::array<double, 3> t_cam_to_marker = {parsed_data[1], parsed_data[2], parsed_data[3]-0.15};
         std::array<double, 3> rvec_cam_to_marker = {parsed_data[4], parsed_data[5], parsed_data[6]};
         std::array<double, 9> R_cam_to_marker = rodriguesToRotationMatrix(rvec_cam_to_marker);
 
@@ -195,26 +209,59 @@ int main() {
             current_tcp_pose_mm_deg[4] * M_PI / 180.0,
             current_tcp_pose_mm_deg[5] * M_PI / 180.0
         );
+
+        // while 루프 안에 추가
+        std::cout << "DEBUG: Robot Current Pose: " 
+            << current_tcp_pose_mm_deg[0] << ", " 
+            << current_tcp_pose_mm_deg[1] << ", " 
+            << current_tcp_pose_mm_deg[2] << ", " 
+            << current_tcp_pose_mm_deg[3] << ", " 
+            << current_tcp_pose_mm_deg[4] << ", " 
+            << current_tcp_pose_mm_deg[5] << std::endl;
         
         // --- [계산 과정] ---
         // 1. 베이스 -> 카메라 계산 (T_base_to_cam = T_base_to_tcp * T_tcp_to_camera)
-        std::array<double, 9> RT_base_to_tcp = transposeMatrix3x3(R_base_to_tcp);
-        std::array<double, 9> R_base_to_cam = matrix_x_matrix(R_tcp_to_camera, RT_base_to_tcp);
-        std::array<double, 3> t_tcp_to_cam_in_base = matrix_x_vector(R_base_to_tcp, t_tcp_to_camera);
+        // std::array<double, 9> RT_base_to_tcp = transposeMatrix3x3(R_base_to_tcp);
+        // std::array<double, 9> R_base_to_cam = matrix_x_matrix(R_tcp_to_camera, RT_base_to_tcp);
+        // std::array<double, 3> t_tcp_to_cam_in_base = matrix_x_vector(R_base_to_tcp, t_tcp_to_camera);
+        // std::array<double, 3> t_base_to_cam = {
+        //     t_base_to_tcp[0] + t_tcp_to_cam_in_base[0],
+        //     t_base_to_tcp[1] + t_tcp_to_cam_in_base[1],
+        //     t_base_to_tcp[2] + t_tcp_to_cam_in_base[2]
+        // };
+        
+        // // 2. 최종: 베이스 -> 마커 계산 (T_base_to_marker = T_base_to_cam * T_cam_to_marker)
+        // std::array<double, 9> RT_base_to_cam = transposeMatrix3x3(R_base_to_cam);
+        // std::array<double, 9> R_base_to_marker = matrix_x_matrix(RT_base_to_cam, R_cam_to_marker);
+        // std::array<double, 3> t_cam_to_marker_in_base = matrix_x_vector(R_base_to_cam, t_cam_to_marker);
+        // std::array<double, 3> t_base_to_marker = {
+        //     t_base_to_cam[0] + t_cam_to_marker_in_base[0],
+        //     t_base_to_cam[1] + t_cam_to_marker_in_base[1],
+        //     t_base_to_cam[2] + t_cam_to_marker_in_base[2]
+        // };
+
+        std::array<double, 9> R_base_to_cam = matrix_x_matrix(R_base_to_tcp, R_tcp_to_camera);
+
+        // 위치: t_base_cam = t_base_tcp + (R_base_tcp * t_tcp_cam)
+        // (주의: tcp에서 바라본 camera의 위치를 base 기준으로 회전시켜서 더함)
+        std::array<double, 3> t_tcp_to_cam_rotated = matrix_x_vector(R_base_to_tcp, t_tcp_to_camera);
         std::array<double, 3> t_base_to_cam = {
-            t_base_to_tcp[0] + t_tcp_to_cam_in_base[0],
-            t_base_to_tcp[1] + t_tcp_to_cam_in_base[1],
-            t_base_to_tcp[2] + t_tcp_to_cam_in_base[2]
+            t_base_to_tcp[0] + t_tcp_to_cam_rotated[0],
+            t_base_to_tcp[1] + t_tcp_to_cam_rotated[1],
+            t_base_to_tcp[2] + t_tcp_to_cam_rotated[2]
         };
         
-        // 2. 최종: 베이스 -> 마커 계산 (T_base_to_marker = T_base_to_cam * T_cam_to_marker)
-        std::array<double, 9> RT_base_to_cam = transposeMatrix3x3(R_base_to_cam);
-        std::array<double, 9> R_base_to_marker = matrix_x_matrix(RT_base_to_cam, R_cam_to_marker);
-        std::array<double, 3> t_cam_to_marker_in_base = matrix_x_vector(R_base_to_cam, t_cam_to_marker);
+        // STEP 2: Base 기준 Marker의 자세 계산 (최종)
+        // 회전: R_base_marker = R_base_cam * R_cam_marker
+        std::array<double, 9> R_base_to_marker = matrix_x_matrix(R_base_to_cam, R_cam_to_marker);
+
+        // 위치: t_base_marker = t_base_cam + (R_base_cam * t_cam_marker)
+        // (주의: camera에서 바라본 marker의 위치를 base 기준으로 회전시켜서 더함)
+        std::array<double, 3> t_cam_to_marker_rotated = matrix_x_vector(R_base_to_cam, t_cam_to_marker);
         std::array<double, 3> t_base_to_marker = {
-            t_base_to_cam[0] + t_cam_to_marker_in_base[0],
-            t_base_to_cam[1] + t_cam_to_marker_in_base[1],
-            t_base_to_cam[2] + t_cam_to_marker_in_base[2]
+            t_base_to_cam[0] + t_cam_to_marker_rotated[0],
+            t_base_to_cam[1] + t_cam_to_marker_rotated[1],
+            t_base_to_cam[2] + t_cam_to_marker_rotated[2]
         };
         
         // --- [최종 결과 출력] ---
@@ -261,7 +308,7 @@ int main() {
         last_valid_aruco_pose = aruco_target_pose;
         has_last_valid_pose = true;
 
-        for (int i = 0; i < 6; ++i) {
+        for (int i = 0; i < 3; ++i) {
             current_commanded_pose[i] = current_commanded_pose[i] + 
                                         STEP_FACTOR * (aruco_target_pose[i] - current_commanded_pose[i]);
         }
@@ -271,7 +318,8 @@ int main() {
         std::cout << "Pos[X,Y,Z]: [" << current_commanded_pose[0] << ", " << current_commanded_pose[1] << ", " << current_commanded_pose[2] << "]" << std::endl;
         std::cout << "Ori[R,P,Y]: [" << current_commanded_pose[3] << ", " << current_commanded_pose[4] << ", " << current_commanded_pose[5] << "]" << std::endl;
 
-        // robot.move_servo_l(rc, current_commanded_pose, 0.01, 0.05, 1, 0.05);
+        robot.move_servo_l(rc, current_commanded_pose, 0.2, 0.05, 1, 0.05);
+        std::this_thread::sleep_for(std::chrono::milliseconds(20));
         rc.error().throw_if_not_empty();
     }
     

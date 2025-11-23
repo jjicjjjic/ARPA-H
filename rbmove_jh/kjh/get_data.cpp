@@ -20,19 +20,31 @@ int main() {
     podo::Cobot robot("10.0.2.7");
     podo::ResponseCollector rc;
 
-    std::ofstream file("/home/nrel/ARPA-H/rbmove_jh/kjh/data/tcp_pose_log.csv");
+    // std::ofstream file("/home/nrel/ARPA-H/rbmove_jh/kjh/data/tcp_pose_log.csv");
     //meal
-    // std::ofstream file("/home/nrel/ARPA-H/rbmove_jh/kjh/data/meal/d_s.csv");
+    // std::ofstream file("/home/nrel/ARPA-H/rbmove_jh/kjh/data/meal/d_w.csv");
+    // std::ofstream file("/home/nrel/ARPA-H/rbmove_jh/kjh/data/meal/w_s.csv");
+    // std::ofstream file("/home/nrel/ARPA-H/rbmove_jh/kjh/data/meal/s_o.csv");
     // std::ofstream file("/home/nrel/ARPA-H/rbmove_jh/kjh/data/meal/s_f.csv");
-    // std::ofstream file("/home/nrel/ARPA-H/rbmove_jh/kjh/data/meal/f.csv");
+    std::ofstream file("/home/nrel/ARPA-H/rbmove_jh/kjh/data/meal/f.csv");
     // std::ofstream file("/home/nrel/ARPA-H/rbmove_jh/kjh/data/meal/f_m.csv");
-    // std::ofstream file("/home/nrel/ARPA-H/rbmove_jh/kjh/data/meal/m_f2.csv");
+    // std::ofstream file("/home/nrel/ARPA-H/rbmove_jh/kjh/data/meal/fix_f2.csv");
     // std::ofstream file("/home/nrel/ARPA-H/rbmove_jh/kjh/data/meal/f2.csv");
     // std::ofstream file("/home/nrel/ARPA-H/rbmove_jh/kjh/data/meal/f2_m.csv");
-    // std::ofstream file("/home/nrel/ARPA-H/rbmove_jh/kjh/data/meal/m_f3.csv");
+    // std::ofstream file("/home/nrel/ARPA-H/rbmove_jh/kjh/data/meal/fix_f3.csv");
     // std::ofstream file("/home/nrel/ARPA-H/rbmove_jh/kjh/data/meal/f3.csv");
     // std::ofstream file("/home/nrel/ARPA-H/rbmove_jh/kjh/data/meal/f3_m.csv");
-    // std::ofstream file("/home/nrel/ARPA-H/rbmove_jh/kjh/data/meal/fix_d.csv");
+    // std::ofstream file("/home/nrel/ARPA-H/rbmove_jh/kjh/data/meal/fix_f4.csv");
+    // std::ofstream file("/home/nrel/ARPA-H/rbmove_jh/kjh/data/meal/f4.csv");
+    // std::ofstream file("/home/nrel/ARPA-H/rbmove_jh/kjh/data/meal/f4_m.csv");
+    // std::ofstream file("/home/nrel/ARPA-H/rbmove_jh/kjh/data/meal/fix_f5.csv");
+    // std::ofstream file("/home/nrel/ARPA-H/rbmove_jh/kjh/data/meal/f5.csv");
+    // std::ofstream file("/home/nrel/ARPA-H/rbmove_jh/kjh/data/meal/f5_m.csv");
+    // std::ofstream file("/home/nrel/ARPA-H/rbmove_jh/kjh/data/meal/fix_f6.csv");
+    // std::ofstream file("/home/nrel/ARPA-H/rbmove_jh/kjh/data/meal/f6.csv");
+    // std::ofstream file("/home/nrel/ARPA-H/rbmove_jh/kjh/data/meal/f6_m.csv");
+    // std::ofstream file("/home/nrel/ARPA-H/rbmove_jh/kjh/data/meal/fix_s.csv");
+    // std::ofstream file("/home/nrel/ARPA-H/rbmove_jh/kjh/data/meal/s_d.csv");
     // //comoral
     // std::ofstream file("/home/nrel/ARPA-H/rbmove_jh/kjh/data/comoral/d_c.csv");
     // std::ofstream file("/home/nrel/ARPA-H/rbmove_jh/kjh/data/comoral/c_m.csv");

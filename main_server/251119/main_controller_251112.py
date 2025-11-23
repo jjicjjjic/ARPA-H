@@ -6,22 +6,29 @@ from tkinter import ttk
 import subprocess
 import os
 
-UDP_IP = "127.0.0.1"
+# UDP_IP = "127.0.0.1"
+BIND_IP = "0.0.0.0"
+TARGET_IP="127.0.0.1"
 MAIN_PORT = 50000
 MODULES = {"mobile": 50001, "arm": 50002, "camera": 50003, "hand": 50004, "robotUI": 50005}
 chewing_num = 1
+mode = 1
+task = 0
+task_meal = 0
 
 status = {name: "Idle" for name in MODULES}
 start_times = {name: None for name in MODULES}
 durations = {name: None for name in MODULES}
 
 recv_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-recv_sock.bind((UDP_IP, MAIN_PORT))
+# recv_sock.bind((UDP_IP, MAIN_PORT))
+recv_sock.bind((BIND_IP, MAIN_PORT))
 recv_sock.settimeout(0.1)
 
 def send_command(target, message):
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    sock.sendto(message.encode(), (UDP_IP, MODULES[target]))
+    # sock.sendto(message.encode(), (UDP_IP, MODULES[target]))
+    sock.sendto(message.encode(), (TARGET_IP, MODULES[target]))
     sock.close()
     print(f"[Send] {target}: {message}")
 
@@ -31,6 +38,10 @@ class RobotGUI:
         self.root.title("Robot System Monitor (Unified Command Input)")
         self.root.geometry("650x480")
         self.root.configure(bg="white")
+        self.chewing_num = 1
+        self.mode = 1 # mode1: meal, mode2: brush, mode3: reposition, mode4: fall prevention
+        self.task = 0
+        self.task_meal = 0
 
         ttk.Label(self.root, text="Robot System Monitor", font=("Arial", 15, "bold")).pack(pady=10)
 
@@ -71,6 +82,7 @@ class RobotGUI:
     # -----------------------------------
     # 공통 command handler (keyboard + UDP 모두 이 함수 사용)
     def handle_command(self, cmd):
+        # chewing_num = 1
         """모든 입력(UDP/키보드)을 여기서 처리"""
         cmd = cmd.strip()
         if not cmd:
@@ -83,6 +95,7 @@ class RobotGUI:
 # Meal start
 
         if cmd == "button1_on":
+            # self.task_meal += 1
             self.start_sequence()
             self.mark_done("mobile")
             self.countdown(1)
@@ -105,61 +118,144 @@ class RobotGUI:
 
 #################### Meal start #############################
 
-        elif cmd == "button2_on":
+        elif cmd == "button2_on" and self.mode == 1 and self.task_meal == 0:
+            self.task_meal += 1
+            subprocess.run([os.path.expanduser("~/ccmedia/ccmedia_R02")], check=True)
             # self.mark_done("mobile")
             self.countdown(1)
             self.start_next("arm", "meal_start_sound")
-            self.countdown(1)
-            self.start_next("arm", "move_to_spoon_start_main")
-            subprocess.run([os.path.expanduser("~/ccmedia/ccmedia_R02")], check=True)
+            # self.countdown(1)
+            # self.start_next("arm", "move_to_spoon_start_main")
+            self.task_meal += 1
 
-        elif cmd == "move_to_spoon_finish_arm":
+        elif cmd == "move_to_spoon_finish_arm" and self.task_meal == 2:
+            self.task_meal += 1
             self.mark_done("arm")
-            self.countdown(1)
-            self.start_next("camera", "find_spoon_position_start_main")
+        #     self.countdown(1)
+        #     self.start_next("camera", "find_spoon_position_start_main")
 
-        elif cmd == "find_spoon_position_finish_camera":
-            self.mark_done("camera")
-            self.countdown(1)
-            self.start_next("arm", "move_next_spoon_start_main")
+        # elif cmd == "find_spoon_position_finish_camera":
+        #     self.mark_done("camera")
+        #     self.countdown(1)
+        #     self.start_next("arm", "move_next_spoon_start_main")
 
-        elif cmd == "move_next_spoon_finish_arm":
-            self.mark_done("arm")
+        # elif cmd == "move_next_spoon_finish_arm":
+        #     self.mark_done("arm")
             self.countdown(1)
             self.start_next("hand", "grasp_spoon_start_main")
+            self.task_meal += 1
 
-        elif cmd == "grasp_spoon_finish_hand":
+
+        elif cmd == "grasp_spoon_finish_hand" and self.task_meal == 4:
+            self.task_meal += 1
             self.mark_done("hand")
             self.countdown(1)
             self.start_next("arm", "move_to_food1_start_main")
+            self.task_meal += 1
 
-        elif cmd == "move_to_food1_finish_arm":
+
+        elif cmd == "move_to_food1_finish_arm" and self.task_meal == 6:
+            self.task_meal += 1
             self.mark_done("arm")
             self.countdown(1)
-            self.start_next("camera", "find_mouth_position_for_meal_start_main")
+            # chewing_num = 1
+            self.start_next("arm", "chewing_sound")
+            self.task_meal += 1
 
-        elif cmd == "find_mouth_position_for_meal_finish_camera":
-            self.mark_done("camera")
-            self.countdown(1)
-            self.start_next("arm", "move_front_mouth_for_meal_start_main")
+        elif cmd == "chewing_start_outside":
+            print("chewing_start_outside success")
+            if self.chewing_num == 1 and self.task_meal == 8:
+                self.task_meal += 1
+                # self.start_next("arm", "go_to_food_sound")
+                # self.mark_done("arm")
+                # print("suceess")
+                # self.countdown(1)
+                # self.start_next("arm", "chewing_sound")
+                self.countdown(1)
+                self.start_next("arm", "move_to_food2_start_main")
+                self.task_meal += 1
 
-        elif cmd == "move_front_mouth_for_meal_finish_arm":
+        elif cmd == "move_to_food2_finish_arm" and self.task_meal == 10:
+            self.task_meal += 1
+            # self.task_meal += 1
             self.mark_done("arm")
             self.countdown(1)
-            # self.start_next("chew_sensor", "check_chewing_start_main")
-
-        elif cmd == "check_chewing_finish_chew_sensor":
-            # self.mark_done("")
+            # self.start_next("arm", "chewing_sound")
             self.chewing_num += 1
-            self.countdown(1)
-            self.start_next("arm", f"move_to_food{self.chewing_num}_start_main")
 
-        elif cmd == f"move_to_food{self.chewing_num}_finish_arm":
+        elif cmd == "chewing_end_outside":
+            print("chewing_end_outside success")
+            if self.chewing_num == 2 and self.task_meal == 12:
+                self.task_meal += 1
+                # self.start_next("arm", "go_to_food_sound")
+                # self.mark_done("arm")
+                self.chewing_num += 1
+                self.countdown(1)
+                self.start_next("arm", "move_from_food2_to_mouth_start_main")
+                self.task_meal += 1
+
+
+######################################################
+        elif cmd == "chewing_problem_outside" and self.task_meal == 12:
+            print("chewing_problem_outside success")
+            self.countdown(1)
+            self.start_next("arm", "chewing_problem_sound")
+
+        # elif cmd == "swallowing_problem_outside":
+        #     self.countdown(1)
+        #     self.start_next("arm", "chewing_sound")
+
+
+
+#########################################################
+        elif cmd == "move_to_food3_finish_arm":
             self.mark_done("arm")
             self.countdown(1)
+            self.start_next("arm", "move_to_food4_start_main")
+
+        elif cmd == "move_to_food4_finish_arm":
+            self.mark_done("arm")
+            self.countdown(1)
+            self.start_next("arm", "move_to_food5_start_main")
+
+        elif cmd == "move_to_food5_finish_arm":
+            self.mark_done("arm")
+            self.countdown(1)
+            self.start_next("arm", "move_to_food6_start_main")
+
+        elif cmd == "move_to_food6_finish_arm":
+            self.mark_done("arm")
+            self.countdown(1)
+            # self.start_next("arm", "move_to_food3_start_main")
+
+        # elif cmd == "move_to_food1_finish_arm":
+        #     self.mark_done("arm")
+        #     self.countdown(1)
+        #     self.start_next("camera", "find_mouth_position_for_meal_start_main")
+
+        # elif cmd == "find_mouth_position_for_meal_finish_camera":
+        #     self.mark_done("camera")
+        #     self.countdown(1)
+        #     self.start_next("arm", "move_front_mouth_for_meal_start_main")
+
+        # elif cmd == "move_front_mouth_for_meal_finish_arm":
+        #     self.mark_done("arm")
+        #     self.countdown(1)
             # self.start_next("chew_sensor", "check_chewing_start_main")
 
-        elif cmd == "button2_off":
+        # elif cmd == "check_chewing_finish_chew_sensor":
+        #     # self.mark_done("")
+        #     self.chewing_num += 1
+        #     self.countdown(1)
+            # self.start_next("arm", f"move_to_food{self.chewing_num}_start_main")
+
+        # elif cmd == f"move_to_food{self.chewing_num}_finish_arm":
+            # self.mark_done("arm")
+            # self.countdown(1)
+            # self.start_next("chew_sensor", "check_chewing_start_main")
+
+        elif cmd == "button2_off" and self.task_meal == 14:
+            subprocess.run([os.path.expanduser("~/ccmedia/ccmedia_R03")], check=True)
             # self.mark_done("arm")
             self.countdown(1)
             self.start_next("arm", "move_from_food_to_default_arm_start_main")
@@ -172,26 +268,26 @@ class RobotGUI:
 ########################## Brush start #############################
 
         elif cmd == "button3_on":
+            subprocess.run([os.path.expanduser("~/ccmedia/ccmedia_R06")], check=True)
             # self.mark_done("mobile")
             self.countdown(1)
             self.start_next("arm", "brush_start_sound")
             self.countdown(1)
             self.start_next("arm", "move_from_default_to_comoral_start_main")
-            subprocess.run([os.path.expanduser("~/ccmedia/ccmedia_R06")], check=True)
 
         elif cmd == "move_from_default_to_comoral_finish_arm":
             self.mark_done("arm")
             self.countdown(1)
-            self.start_next("camera", "find_comoral_position_start_main")
+            # self.start_next("camera", "find_comoral_position_start_main")
 
-        elif cmd == "find_comoral_position_finish_camera":
-            self.mark_done("camera")
-            self.countdown(1)
-            self.start_next("arm", "move_next_comoral_start_main")
+        # elif cmd == "find_comoral_position_finish_camera":
+        #     self.mark_done("camera")
+            # # self.countdown(1)
+            # self.start_next("arm", "move_next_comoral_start_main")
 
-        elif cmd == "move_next_comoral_finish_arm":
-            self.mark_done("arm")
-            self.countdown(1)
+        # elif cmd == "move_next_comoral_finish_arm":
+        #     self.mark_done("arm")
+        #     self.countdown(1)
             self.start_next("hand", "grasp_comoral_start_main")
 
         elif cmd == "grasp_comoral_finish_hand":
@@ -203,33 +299,35 @@ class RobotGUI:
             self.mark_done("arm")
             self.countdown(1)
             self.start_next("camera", "find_mouth_position_for_brush_start_main")
-
-        elif cmd == "find_mouth_position_for_brush_finish_camera":
-            self.mark_done("camera")
             self.countdown(1)
             self.start_next("arm", "move_front_mouth_for_brush_start_main")
+
+        # elif cmd == "find_mouth_position_for_brush_finish_camera":
+        #     self.mark_done("camera")
+        #     self.countdown(1)
+        #     self.start_next("arm", "move_front_mouth_for_brush_start_main")
 
         elif cmd == "move_front_mouth_for_brush_finish_arm":
             self.mark_done("arm")
             self.countdown(1)
-            self.countdown(1)
+            # self.countdown(1)
             self.start_next("arm", "bite_cormal_sound")
             # self.start_next("chew_sensor", "check_chewing_start_main")
 
         elif cmd == "button3_off":
+            subprocess.run([os.path.expanduser("~/ccmedia/ccmedia_R07")], check=True)
             # self.mark_done("mobile")
             self.countdown(1)
             self.start_next("arm", "brush_finish_sound")
             self.countdown(1)
             self.start_next("arm", "move_from_mouth_to_comoral_start_main")
-            subprocess.run([os.path.expanduser("~/ccmedia/ccmedia_R07")], check=True)
 
         elif cmd == "move_from_mouth_to_comoral_finish_arm":
             self.mark_done("arm")
             self.countdown(1)
             self.start_next("hand", "release_comoral_start_main")
 
-        elif cmd == "release_comoral_finish_hand":
+        elif cmd == "release_comoral_finish_hand":    
             self.mark_done("hand")
             self.countdown(1)
             self.start_next("arm", "move_from_comoral_to_default_start_main")
@@ -240,71 +338,117 @@ class RobotGUI:
 
 ##################### Reposition start #########################
 
-        elif cmd == "button4_on":
+        elif cmd == "change_pressure_outside":
+            print("pressure_outside success")
+            self.mode = 3
+            self.task = 1
+
+        # elif cmd == "button1_on" and self.mode == 3 and self.task == 1:
+        #     self.task += 1
+        #     print("mode 3")
+        #     subprocess.run([os.path.expanduser("~/ccmedia/ccmedia_R09")], check=True)
+        #     # self.mark_done("mobile")
+        #     # self.countdown(1)
+        #     # self.start_next("arm", "move_from_gap1_to_default_main")
+
+        elif cmd == "button4_on" and self.task == 2:
+            subprocess.run([os.path.expanduser("~/ccmedia/ccmedia_R10")], check=True)
             # self.mark_done("pressure")
+            self.task += 1
             self.countdown(1)
             self.start_next("arm", "move_from_default_to_cushion1_start_main")
             self.countdown(1)
             self.start_next("arm", "reposition_start_sound")
-            subprocess.run([os.path.expanduser("~/ccmedia/ccmedia_R10")], check=True)
-
-        elif cmd == "put_cushion_vision":
+            
+        elif cmd == "change_vision_outside" and self.task == 3:
+            print("change vision outside success")
+            self.task += 1
             # self.mark_done("arm")
+            # print("[Hand] release_comoral_finish")
             self.countdown(1)
             self.start_next("hand", "grasp_cushion1_start_main")
 
-        elif cmd == "grasp_cushion1_finish_hand":
+        elif cmd == "grasp_cushion1_finish_hand" and self.task == 4:
             self.mark_done("hand")
+            self.task += 1
             self.countdown(1)
             self.start_next("arm", "move_from_cushion1_to_back_start_main")
 
-        elif cmd == "move_from_cushion1_to_back_finish_arm":
+        elif cmd == "move_from_cushion1_to_back_finish_arm" and self.task == 5:
             self.mark_done("arm")
+            self.task += 1
             self.countdown(1)
             self.start_next("hand", "release_cushion1_start_main")
 
-        elif cmd == "release_cushion1_finish_hand":
+        elif cmd == "release_cushion1_finish_hand" and self.task == 6:
             self.mark_done("hand")
+            self.task += 1
             self.countdown(1)
             self.start_next("arm", "move_from_back_to_cushion2_start_main")
 
-        elif cmd == "move_from_back_to_cushion2_finish_arm":
+        elif cmd == "move_from_back_to_cushion2_finish_arm" and self.task == 7:
             self.mark_done("arm")
+            self.task += 1
             self.countdown(1)
             self.start_next("hand", "grasp_cushion2_start_main")
 
-        elif cmd == "grasp_cushion2_finish_hand":
+        elif cmd == "grasp_cushion2_finish_hand" and self.task == 8:
             self.mark_done("hand")
+            self.task += 1
             self.countdown(1)
             self.start_next("arm", "move_from_cushion2_to_leg_start_main")
 
-        elif cmd == "move_from_cushion2_to_leg_finish_arm":
+        elif cmd == "move_from_cushion2_to_leg_finish_arm" and self.task == 9:
             self.mark_done("arm")
+            self.task += 1
             self.countdown(1)
             self.start_next("hand", "release_cushion2_start_main")
 
-        elif cmd == "release_cushion2_finish_hand":
+        elif cmd == "release_cushion2_finish_hand" and self.task == 10:
+            subprocess.run([os.path.expanduser("~/ccmedia/ccmedia_R11")], check=True)
             self.mark_done("hand")
+            self.task += 1
             self.countdown(1)
             self.start_next("arm", "move_from_back_to_default_start_main")
             self.countdown(1)
             self.start_next("arm", "reposition_finish_sound")
-            subprocess.run([os.path.expanduser("~/ccmedia/ccmedia_R11")], check=True)
+
+        elif cmd == "move_from_back_to_default_finish_arm" and self.task == 11:
+            self.task += 1
+            subprocess.run([os.path.expanduser("~/ccmedia/ccmedia_R12")], check=True)
+            if cmd == "button1_off":
+                self.countdown(1)
+                self.start_next("mobile", "dock_off_start_main")
+                self.countdown(1)
+                self.start_next("arm", "dock_off_start_sound")
+
+            
 
 #################### Reposition finish #########################
 
 ################### Fall prevention start ######################
 
-        elif cmd == "fall1_detect_vision":
-            # self.mark_done("arm")
-            self.countdown(1)
-            self.start_next("mobile", "move_to_gap1_start_main")
-            self.countdown(1)
-            self.start_next("arm", "prevent_fall_posture_start_main")
-            self.countdown(1)
-            self.start_next("arm", "move_to_gap1_sound")
-            subprocess.run([os.path.expanduser("~/ccmedia/ccmedia_R14")], check=True)
+        # elif cmd == "fall_first_outside":
+        #     # self.mark_done("arm")
+        #     subprocess.run([os.path.expanduser("~/ccmedia/ccmedia_R14")], check=True)
+        #     self.countdown(1)
+        #     self.start_next("mobile", "move_to_gap1_start_main")
+        #     self.countdown(1)
+        #     self.start_next("arm", "move_to_gap1_sound")
+        #     self.countdown(1)
+        #     self.start_next("arm", "prevent_fall_posture_start_main")
 
+        # elif cmd == "button1_off_for_fall":
+        #     subprocess.run([os.path.expanduser("~/ccmedia/ccmedia_R15")], check=True)
+        #     self.mark_done("arm")
+        #     self.countdown(1)
+        #     self.start_next("arm", "move_from_gap1_to_default_main")
+
+        elif cmd == "ccmedia_R16":
+            subprocess.run([os.path.expanduser("~/ccmedia/ccmedia_R16")], check=True)
+            # self.mark_done("arm")
+            # self.countdown(1)
+            # self.start_next("arm", "move_from_gap1_to_default_main")
 
 ################################################################
 

@@ -17,6 +17,7 @@ while True:
     msg = data.decode().strip()
     if msg.startswith("move_to_spoon_start_main"):
         print("[Arm] move_to_spoon_start")
+        #default -> spoon
         # arm_path = os.path.expanduser("~/rbpodo_kdh/build/practice1_251015")
         # subprocess.run([arm_path], check=True)
         time.sleep(1.5)
@@ -33,8 +34,18 @@ while True:
 
     elif msg.startswith("move_to_food1_start_main"):
         print("[Arm] move_to_food1_start")
-        # arm_path = os.path.expanduser("~/rbpodo_kdh/build/practice1_251015")
-        # subprocess.run([arm_path], check=True)
+        # spoon -> food1 -> mouth
+        arm_path = os.path.expanduser("/home/nrel/ARPA-H/rbmove_jh/build/m2_spoon_out")
+        subprocess.run([arm_path], check=True)
+        time.sleep(1.5)
+        arm_path = os.path.expanduser("/home/nrel/ARPA-H/rbmove_jh/build/m3_spoon_food")
+        subprocess.run([arm_path], check=True)
+        time.sleep(1.5)
+        arm_path = os.path.expanduser("/home/nrel/ARPA-H/rbmove_jh/build/m4_food_scoop")
+        subprocess.run([arm_path], check=True)
+        time.sleep(1.5)
+        arm_path = os.path.expanduser("/home/nrel/ARPA-H/rbmove_jh/build/m5_food_mouth")
+        subprocess.run([arm_path], check=True)
         time.sleep(1.5)
         print("[Arm] move_to_food1_finish")
         sock.sendto(b"move_to_food1_finish_arm", (UDP_IP, MAIN_PORT))
@@ -49,11 +60,27 @@ while True:
 
     elif msg.startswith("move_to_food2_start_main"):
         print("[Arm] move_to_food2_start")
-        # arm_path = os.path.expanduser("~/rbpodo_kdh/build/practice1_251015")
-        # subprocess.run([arm_path], check=True)
+        # food scoop
+        arm_path = os.path.expanduser("/home/nrel/ARPA-H/rbmove_jh/build/m7_mouth_fix")
+        subprocess.run([arm_path], check=True)
+        time.sleep(1.5)
+        arm_path = os.path.expanduser("/home/nrel/ARPA-H/rbmove_jh/build/m75_fix_food")
+        subprocess.run([arm_path], check=True)
+        time.sleep(1.5)
+        arm_path = os.path.expanduser("/home/nrel/ARPA-H/rbmove_jh/build/m4_food_scoop")
+        subprocess.run([arm_path], check=True)
         time.sleep(1.5)
         print("[Arm] move_to_food2_finish")
         sock.sendto(b"move_to_food2_finish_arm", (UDP_IP, MAIN_PORT))
+
+    elif msg.startswith("move_from_food2_to_mouth_start_main"):
+        print("[Arm] move_to_food2_start")
+        # food2 -> mouth
+        arm_path = os.path.expanduser("/home/nrel/ARPA-H/rbmove_jh/kjh/meal/m5_food_mouth.cpp")
+        subprocess.run([arm_path], check=True)
+        time.sleep(1.5)
+        print("[Arm] move_to_fix_start")
+        sock.sendto(b"move_to_fix_start_arm", (UDP_IP, MAIN_PORT))
 
     elif msg.startswith("move_to_food3_start_main"):
         print("[Arm] move_to_food3_start")
@@ -85,31 +112,31 @@ while True:
 
     elif msg.startswith("move_from_default_to_comoral_start_main"):
         print("[Arm] move_from_default_to_comoral_start")
-        # arm_path = os.path.expanduser("~/rbpodo_kdh/build/practice1_251015")
-        # subprocess.run([arm_path], check=True)
+        arm_path = os.path.expanduser("/home/nrel/ARPA-H/rbmove_jh/build/c1_default_comoral")
+        subprocess.run([arm_path], check=True)
         time.sleep(1.5)
         print("[Arm] move_from_default_to_comoral_finish")
         sock.sendto(b"move_from_default_to_comoral_finish_arm", (UDP_IP, MAIN_PORT))
 
-    elif msg.startswith("move_next_comoral_start_main"):
-        print("[Arm] move_next_comoral_start")
-        # arm_path = os.path.expanduser("~/rbpodo_kdh/build/practice1_251015")
-        # subprocess.run([arm_path], check=True)
-        time.sleep(1.5)
-        print("[Arm] move_next_comoral_finish")
-        sock.sendto(b"move_next_comoral_finish_arm", (UDP_IP, MAIN_PORT))
+    # elif msg.startswith("move_next_comoral_start_main"):
+    #     print("[Arm] move_next_comoral_start")
+    #     # arm_path = os.path.expanduser("/home/nrel/ARPA-H/rbmove_jh/build/c2_comoral_mouth")
+    #     # subprocess.run([arm_path], check=True)
+    #     time.sleep(1.5)
+    #     print("[Arm] move_next_comoral_finish")
+    #     sock.sendto(b"move_next_comoral_finish_arm", (UDP_IP, MAIN_PORT))
 
     elif msg.startswith("move_cormal_to_mouth_start_main"):
         print("[Arm] move_cormal_to_mouth_start")
-        # arm_path = os.path.expanduser("~/rbpodo_kdh/build/practice1_251015")
-        # subprocess.run([arm_path], check=True)
+        arm_path = os.path.expanduser("/home/nrel/ARPA-H/rbmove_jh/build/c2_comoral_mouth")
+        subprocess.run([arm_path], check=True)
         time.sleep(1.5)
         print("[Arm] move_cormal_to_mouth_finish")
         sock.sendto(b"move_cormal_to_mouth_finish_arm", (UDP_IP, MAIN_PORT))
 
     elif msg.startswith("move_front_mouth_for_brush_start_main"):
         print("[Arm] move_front_mouth_for_brush_start")
-        # arm_path = os.path.expanduser("~/rbpodo_kdh/build/practice1_251015")
+        # arm_path = os.path.expanduser("/home/nrel/ARPA-H/rbmove_jh/build/c3_mouth")
         # subprocess.run([arm_path], check=True)
         time.sleep(1.5)
         print("[Arm] move_front_mouth_for_brush_finish")
@@ -117,16 +144,22 @@ while True:
 
     elif msg.startswith("move_from_mouth_to_comoral_start_main"):
         print("[Arm] move_from_mouth_to_comoral_start")
-        # arm_path = os.path.expanduser("~/rbpodo_kdh/build/practice1_251015")
-        # subprocess.run([arm_path], check=True)
+        arm_path = os.path.expanduser("/home/nrel/ARPA-H/rbmove_jh/build/c4_mouth_fix")
+        subprocess.run([arm_path], check=True)
+        time.sleep(1.5)
+        arm_path = os.path.expanduser("/home/nrel/ARPA-H/rbmove_jh/build/c5_fix_comoral")
+        subprocess.run([arm_path], check=True)
         time.sleep(1.5)
         print("[Arm] move_from_mouth_to_comoral_finish")
         sock.sendto(b"move_from_mouth_to_comoral_finish_arm", (UDP_IP, MAIN_PORT))
 
     elif msg.startswith("move_from_comoral_to_default_start_main"):
         print("[Arm] move_from_comoral_to_default_start")
-        # arm_path = os.path.expanduser("~/rbpodo_kdh/build/practice1_251015")
-        # subprocess.run([arm_path], check=True)
+        arm_path = os.path.expanduser("/home/nrel/ARPA-H/rbmove_jh/build/c6_comoral_default")
+        subprocess.run([arm_path], check=True)
+        time.sleep(1.5)
+        arm_path = os.path.expanduser("/home/nrel/ARPA-H/rbmove_jh/build/default_move")
+        subprocess.run([arm_path], check=True)
         time.sleep(1.5)
         print("[Arm] move_from_comoral_to_default_finish")
         sock.sendto(b"move_from_comoral_to_default_finish_arm", (UDP_IP, MAIN_PORT))
@@ -137,40 +170,44 @@ while True:
 
     elif msg.startswith("move_from_default_to_cushion1_start_main"):
         print("[Arm] move_from_default_to_cushion1_start")
-        # arm_path = os.path.expanduser("~/rbpodo_kdh/build/practice1_251015")
-        # subprocess.run([arm_path], check=True)
+        arm_path = os.path.expanduser("/home/nrel/ARPA-H/rbmove_jh/build/default_move")
+        subprocess.run([arm_path], check=True)
+        arm_path = os.path.expanduser("/home/nrel/ARPA-H/rbmove_jh/build/p1_default_cushion")
+        subprocess.run([arm_path], check=True)
         time.sleep(1.5)
         print("[Arm] move_from_default_to_cushion1_finish")
-        # sock.sendto(b"move_from_default_to_cushion_finish_arm", (UDP_IP, MAIN_PORT))
+        sock.sendto(b"move_from_default_to_cushion_finish_arm", (UDP_IP, MAIN_PORT))
 
     elif msg.startswith("move_from_cushion1_to_back_start_main"):
         print("[Arm] move_from_cushion1_to_back_start")
-        # arm_path = os.path.expanduser("~/rbpodo_kdh/build/practice1_251015")
-        # subprocess.run([arm_path], check=True)
+        arm_path = os.path.expanduser("/home/nrel/ARPA-H/rbmove_jh/build/p2_cushion_back")
+        subprocess.run([arm_path], check=True)
         time.sleep(1.5)
         print("[Arm] move_from_cushion1_to_back_finish")
         sock.sendto(b"move_from_cushion1_to_back_finish_arm", (UDP_IP, MAIN_PORT))
 
     elif msg.startswith("move_from_back_to_cushion2_start_main"):
         print("[Arm] move_from_back_to_cushion2_start")
-        # arm_path = os.path.expanduser("~/rbpodo_kdh/build/practice1_251015")
-        # subprocess.run([arm_path], check=True)
+        arm_path = os.path.expanduser("/home/nrel/ARPA-H/rbmove_jh/build/p3_back_cushion2")
+        subprocess.run([arm_path], check=True)
         time.sleep(1.5)
         print("[Arm] move_from_back_to_cushion2_finish")
         sock.sendto(b"move_from_back_to_cushion2_finish_arm", (UDP_IP, MAIN_PORT))
 
     elif msg.startswith("move_from_cushion2_to_leg_start_main"):
         print("[Arm] move_from_cushion2_to_leg_start")
-        # arm_path = os.path.expanduser("~/rbpodo_kdh/build/practice1_251015")
-        # subprocess.run([arm_path], check=True)
+        arm_path = os.path.expanduser("/home/nrel/ARPA-H/rbmove_jh/build/p4_cushion2_back")
+        subprocess.run([arm_path], check=True)
         time.sleep(1.5)
         print("[Arm] move_from_cushion2_to_leg_finish")
         sock.sendto(b"move_from_cushion2_to_leg_finish_arm", (UDP_IP, MAIN_PORT))
 
     elif msg.startswith("move_from_back_to_default_start_main"):
         print("[Arm] move_from_back_to_default_start")
-        # arm_path = os.path.expanduser("~/rbpodo_kdh/build/practice1_251015")
-        # subprocess.run([arm_path], check=True)
+        arm_path = os.path.expanduser("/home/nrel/ARPA-H/rbmove_jh/build/p5_back_default")
+        subprocess.run([arm_path], check=True)
+        arm_path = os.path.expanduser("/home/nrel/ARPA-H/rbmove_jh/build/default_move")
+        subprocess.run([arm_path], check=True)
         time.sleep(1.5)
         print("[Arm] move_from_back_to_default_finish")
         sock.sendto(b"move_from_back_to_default_finish_arm", (UDP_IP, MAIN_PORT))
@@ -179,15 +216,25 @@ while True:
 
 ################### Fall prevention start ####################
 
-    elif msg.startswith("prevent_fall_posture_main"):
+    elif msg.startswith("prevent_fall_posture_start_main"):
             print("[Arm] prevent_fall_posture_start")
-            # arm_path = os.path.expanduser("~/rbpodo_kdh/build/practice1_251015")
-            # subprocess.run([arm_path], check=True)
+            arm_path = os.path.expanduser("/home/nrel/ARPA-H/rbmove_jh/build/f1_pose1")
+            subprocess.run([arm_path], check=True)
             time.sleep(1.5)
             print("[Arm] prevent_fall_posture_finish")
             sock.sendto(b"prevent_fall_posture_finish_arm", (UDP_IP, MAIN_PORT))
 
-
+    elif msg.startswith("move_from_gap1_to_default_main"):
+            print("[Arm] move_from_gap1_to_default_start")
+            arm_path = os.path.expanduser("/home/nrel/ARPA-H/rbmove_jh/build/f2_pose1_default")
+            subprocess.run([arm_path], check=True)
+            time.sleep(1.5)
+            arm_path = os.path.expanduser("/home/nrel/ARPA-H/rbmove_jh/build/default_move")
+            subprocess.run([arm_path], check=True)
+            time.sleep(1.5)
+            print("[Arm] move_from_gap1_to_default_finish")
+            sock.sendto(b"move_from_gap1_to_default_finish_arm", (UDP_IP, MAIN_PORT))
+            
 
 
 # sound
@@ -217,16 +264,32 @@ while True:
 
     elif msg.startswith("meal_start_sound"):
         print("[Arm] meal_start_sound")
-        # arm_path = os.path.expanduser("~/rbpodo_kdh/build/practice2_251015") 
-        # subprocess.run([arm_path], check=True)
+        arm_path = os.path.expanduser("/home/nrel/ARPA-H/rbmove_jh/build/Meal_start") 
+        subprocess.run([arm_path], check=True)
         time.sleep(1.5)
         print("[Arm] meal_start_sound DONE")
         # sock.sendto(b"ARM_DONE_FOOD2", (UDP_IP, MAIN_PORT))
 
+    elif msg.startswith("chewing_sound"):
+        print("[Arm] chewing_sound")
+        arm_path = os.path.expanduser("/home/nrel/ARPA-H/rbmove_jh/build/Meal_pleaseeat") 
+        subprocess.run([arm_path], check=True)
+        time.sleep(1.5)
+        print("[Arm] chewing_sound DONE")
+        # sock.sendto(b"ARM_DONE_FOOD2", (UDP_IP, MAIN_PORT))
+        
+    elif msg.startswith("chewing_problem_sound"):
+        print("[Arm] chewing_problem_sound")
+        arm_path = os.path.expanduser("/home/nrel/ARPA-H/rbmove_jh/build/Meal_pleasechew") 
+        subprocess.run([arm_path], check=True)
+        time.sleep(1.5)
+        print("[Arm] chewing_problem_sound DONE")
+        # sock.sendto(b"ARM_DONE_FOOD2", (UDP_IP, MAIN_PORT))
+
     elif msg.startswith("meal_finish_sound"):
         print("[Arm] meal_finish_sound")
-        # arm_path = os.path.expanduser("~/rbpodo_kdh/build/practice2_251015") 
-        # subprocess.run([arm_path], check=True)
+        arm_path = os.path.expanduser("/home/nrel/ARPA-H/rbmove_jh/build/Meal_done") 
+        subprocess.run([arm_path], check=True)
         time.sleep(1.5)
         print("[Arm] meal_finish_sound DONE")
         # sock.sendto(b"ARM_DONE_FOOD2", (UDP_IP, MAIN_PORT))
@@ -237,24 +300,24 @@ while True:
 
     elif msg.startswith("brush_start_sound"):
         print("[Arm] brush_start_sound")
-        # arm_path = os.path.expanduser("~/rbpodo_kdh/build/practice2_251015") 
-        # subprocess.run([arm_path], check=True)
+        arm_path = os.path.expanduser("/home/nrel/ARPA-H/rbmove_jh/build/Brushing_start") 
+        subprocess.run([arm_path], check=True)
         time.sleep(1.5)
         print("[Arm] brush_start_sound DONE")
         # sock.sendto(b"ARM_DONE_FOOD2", (UDP_IP, MAIN_PORT))
 
     elif msg.startswith("bite_cormal_sound"):
         print("[Arm] bite_cormal_sound")
-        # arm_path = os.path.expanduser("~/rbpodo_kdh/build/practice2_251015") 
-        # subprocess.run([arm_path], check=True)
+        arm_path = os.path.expanduser("/home/nrel/ARPA-H/rbmove_jh/build/Brushing_bitewaterlet") 
+        subprocess.run([arm_path], check=True)
         time.sleep(1.5)
         print("[Arm] bite_cormal_sound DONE")
         # sock.sendto(b"ARM_DONE_FOOD2", (UDP_IP, MAIN_PORT))
 
     elif msg.startswith("brush_finish_sound"):
         print("[Arm] brush_finish_sound")
-        # arm_path = os.path.expanduser("~/rbpodo_kdh/build/practice2_251015") 
-        # subprocess.run([arm_path], check=True)
+        arm_path = os.path.expanduser("/home/nrel/ARPA-H/rbmove_jh/build/Brushing_done") 
+        subprocess.run([arm_path], check=True)
         time.sleep(1.5)
         print("[Arm] brush_finish_sound DONE")
         # sock.sendto(b"ARM_DONE_FOOD2", (UDP_IP, MAIN_PORT))
@@ -265,16 +328,16 @@ while True:
 
     elif msg.startswith("reposition_start_sound"):
         print("[Arm] reposition_start_sound")
-        # arm_path = os.path.expanduser("~/rbpodo_kdh/build/practice2_251015") 
-        # subprocess.run([arm_path], check=True)
+        arm_path = os.path.expanduser("/home/nrel/ARPA-H/rbmove_jh/build/Position_start") 
+        subprocess.run([arm_path], check=True)
         time.sleep(1.5)
         print("[Arm] reposition_start_sound DONE")
         # sock.sendto(b"ARM_DONE_FOOD2", (UDP_IP, MAIN_PORT))
 
     elif msg.startswith("reposition_finish_sound"):
         print("[Arm] reposition_finish_sound")
-        # arm_path = os.path.expanduser("~/rbpodo_kdh/build/practice2_251015") 
-        # subprocess.run([arm_path], check=True)
+        arm_path = os.path.expanduser("/home/nrel/ARPA-H/rbmove_jh/build/Position_end") 
+        subprocess.run([arm_path], check=True)
         time.sleep(1.5)
         print("[Arm] reposition_finish_sound DONE")
         # sock.sendto(b"ARM_DONE_FOOD2", (UDP_IP, MAIN_PORT))
@@ -285,8 +348,8 @@ while True:
 
     elif msg.startswith("move_to_gap1_sound"):
         print("[Arm] move_to_gap1_sound")
-        # arm_path = os.path.expanduser("~/rbpodo_kdh/build/practice2_251015") 
-        # subprocess.run([arm_path], check=True)
+        arm_path = os.path.expanduser("/home/nrel/ARPA-H/rbmove_jh/build/Fall_danger") 
+        subprocess.run([arm_path], check=True)
         time.sleep(1.5)
         print("[Arm] move_to_gap1_sound DONE")
         # sock.sendto(b"ARM_DONE_FOOD2", (UDP_IP, MAIN_PORT))
