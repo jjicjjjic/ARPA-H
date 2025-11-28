@@ -17,7 +17,7 @@ material_line.shader = "unlitLine"
 material_line.line_width = 7.0  # Set the desired thickness here
 material_line.base_color = np.array([1,0,0,1])
 
-def keypoints_2d_to_3d_open3d(keypoints_2d, depth_image, intrinsic, depth_scale=1000.0):
+def keypoints_2d_to_3d_open3d(keypoints_2d, depth_image, intrinsic, depth_scale=10000.0):
     """
     Converts 2D keypoints into 3D using Open3D-style intrinsics and scaling.
 
