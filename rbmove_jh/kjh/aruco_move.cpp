@@ -65,25 +65,33 @@ int main() {
     std::array<double, 6> last_valid_aruco_pose;
     const double MAX_JUMP_MM = 50;
 
-    std::cout << "UDP Server is listening on port " << PORT << std::endl;
-    std::cout << "Applying D405 depth filter: " << MIN_VALID_DEPTH*100.0 << "cm - " 
-              << MAX_VALID_DEPTH*100.0 << "cm" << std::endl;
+    // std::cout << "UDP Server is listening on port " << PORT << std::endl;
+    // std::cout << "Applying D405 depth filter: " << MIN_VALID_DEPTH*100.0 << "cm - " 
+    //           << MAX_VALID_DEPTH*100.0 << "cm" << std::endl;
 
+    // 90, 0, 90으로 이동하고
+    std::cout << "Moving to initial orientation..." << std::endl;
+    std::array<double, 6> init_pose;
+    robot.get_tcp_info(rc, init_pose); 
+
+    init_pose[3] = 90.0;
+    init_pose[4] = 0.0;
+    init_pose[5] = 90.0;
+
+    robot.move_j(rc, init_pose, 60.0, 60.0, 3.0); 
+    // std::this_thread::sleep_for(std::chrono::seconds(3));
+        
+    // 아루코 마커로 이동
     while (true) {
         socklen_t len = sizeof(cliaddr);
         int n = recvfrom(sockfd, (char *)buffer, BUFFER_SIZE, 0, (struct sockaddr *) &cliaddr, &len);
 
-        // 2. 버퍼에 쌓인 나머지 데이터가 있다면 싹 다 읽어버림 (Non-Blocking)
         while (true) {
-            // MSG_DONTWAIT: 데이터가 없으면 기다리지 않고 즉시 -1 리턴
             int n_next = recvfrom(sockfd, (char *)buffer, BUFFER_SIZE, MSG_DONTWAIT, (struct sockaddr *) &cliaddr, &len);
             
             if (n_next < 0) {
-                // 더 이상 읽을 데이터가 없음 -> 방금 전 'n'이 가장 최신 데이터임
                 break; 
             }
-            
-            // 새로운 데이터가 있다면, 그게 더 최신이므로 'n'을 갱신하고 루프 계속
             n = n_next; 
         }
         buffer[n] = '\0';
@@ -98,6 +106,7 @@ int main() {
         if (parsed_data.size() != 7) continue;
 
 
+        // 내장함수에 넣은 포인트값들
         std::array<double, 6> current_commanded_pose{};
         robot.get_tcp_info(rc, current_commanded_pose);
         
@@ -153,6 +162,9 @@ int main() {
         current_commanded_pose[0] += GAIN * delta_x * 1000.0;
         current_commanded_pose[1] += GAIN * delta_y * 1000.0;
         current_commanded_pose[2] += GAIN * delta_z * 1000.0;
+        current_commanded_pose[3] = 90.0;
+        current_commanded_pose[4] = 0.0;
+        current_commanded_pose[5] = 90.0;
 
         if (current_commanded_pose[2] < 200.0) current_commanded_pose[2] = 200.0;
 
