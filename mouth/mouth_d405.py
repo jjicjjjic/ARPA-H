@@ -6,6 +6,10 @@
 ###############################################
 #py3_10/window
 #py310/linux
+import os
+# Force Open3D into CPU rendering; avoids GPU/OpenGL crashes on machines without a GPU.
+os.environ.setdefault("OPEN3D_CPU_RENDERING", "true")
+os.environ.setdefault("OPEN3D_RENDERING_DEVICE", "cpu")
 import time    
 import open3d as o3d
 import open3d.visualization.gui as gui
@@ -60,15 +64,15 @@ o3d_intr = o3d.camera.PinholeCameraIntrinsic(
 )
     
 # Pose estimation setup
-device = 'cuda'  # 'cuda' or 'mps' if available
-# device = 'cuda'  # 'cuda' or 'mps' if available
 backend = 'onnxruntime'
 openpose_skeleton = False
+# Default to CPU; override by setting RTM_DEVICE to 'cuda' or 'mps' if available.
+device = os.environ.get("RTM_DEVICE", "cpu")
 wholebody = Wholebody(to_openpose=openpose_skeleton,
-                      mode='performance',
+                      mode='lightweight',
                       backend=backend,
                       device=device)
-
+print('Model loaded!')
 
 material_pc = rendering.MaterialRecord()
 # material_pc.point_size = 3
@@ -139,7 +143,7 @@ class RealSenseSceneApp:
                         self.cur_time = time.time()
                     else:
                         new_time = time.time()
-                        # print(new_time-self.cur_time)
+                        print(new_time-self.cur_time)
                         self.cur_time = new_time
                     frames = pipeline.wait_for_frames()
                     # frames = pipeline.wait_for_frames(timeout_ms=10000)

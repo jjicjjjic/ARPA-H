@@ -74,12 +74,12 @@ int main() {
     std::array<double, 6> init_pose;
     robot.get_tcp_info(rc, init_pose); 
 
-    init_pose[3] = 90.0;
+    init_pose[3] = 150.0;
     init_pose[4] = 0.0;
     init_pose[5] = 90.0;
 
     robot.move_j(rc, init_pose, 60.0, 60.0, 3.0); 
-    // std::this_thread::sleep_for(std::chrono::seconds(3));
+    std::this_thread::sleep_for(std::chrono::seconds(3));
         
     // 아루코 마커로 이동
     while (true) {
@@ -110,7 +110,7 @@ int main() {
         std::array<double, 6> current_commanded_pose{};
         robot.get_tcp_info(rc, current_commanded_pose);
         
-        double target_dist = 0.20; // 목표 20cm
+        double target_dist = 0.25; // 목표 20cm
 
         double err_x = parsed_data[1]; 
         double err_y = parsed_data[2];
@@ -162,11 +162,11 @@ int main() {
         current_commanded_pose[0] += GAIN * delta_x * 1000.0;
         current_commanded_pose[1] += GAIN * delta_y * 1000.0;
         current_commanded_pose[2] += GAIN * delta_z * 1000.0;
-        current_commanded_pose[3] = 90.0;
-        current_commanded_pose[4] = 0.0;
-        current_commanded_pose[5] = 90.0;
+        current_commanded_pose[3] = 150;
+        current_commanded_pose[4] = 0;
+        current_commanded_pose[5] = 90;
 
-        if (current_commanded_pose[2] < 200.0) current_commanded_pose[2] = 200.0;
+        // if (current_commanded_pose[2] < 200.0) current_commanded_pose[2] = 200.0;
 
         std::cout << "Dist: " << std::fixed << std::setprecision(1) << dist_current*1000 
                   << "mm | ErrX: " << err_x*1000 << " | CmdX: " << delta_x << std::endl;

@@ -17,10 +17,10 @@ int main() {
     robot.set_operation_mode(rc, podo::OperationMode::Real);
     rc.error().throw_if_not_empty();
 
-    robot.set_speed_bar(rc, 0.3);
+    robot.set_speed_bar(rc, 0.7);
     robot.flush(rc);
 
-    std::array<double, 6> tcp_pose = {213, -380, 849, -36, -65, 53};  // 요기에 Fix pose 정해지면 입력하기!
+    std::array<double, 6> tcp_pose = {321, -390, 770, -13, -23, 20};  // 요기에 Fix pose 정해지면 입력하기!
     robot.move_l(rc, tcp_pose, 100, 100);
     rc.error().throw_if_not_empty();
 

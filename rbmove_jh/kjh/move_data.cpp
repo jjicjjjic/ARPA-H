@@ -56,7 +56,7 @@ int main() {
         }
         std::cout << "]" << std::endl;
 
-        robot.move_servo_l(rc, tcp_pose, 0.1, 0.05, 1, 0.05);
+        robot.move_servo_l(rc, tcp_pose, 0.05, 0.05, 1, 0.07);
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
         rc.error().throw_if_not_empty();
 
