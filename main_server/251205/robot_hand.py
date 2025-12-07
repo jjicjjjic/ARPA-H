@@ -15,8 +15,8 @@ while True:
     data, addr = sock.recvfrom(1024)
     msg = data.decode().strip()
 
-    if msg == "grasp_spoon_start_main":
-        print("[Hand] grasp_spoon_start")
+    if msg == "m5_hand": # grasp_spoon_start_main
+        print("[Hand] m5_hand")
         subprocess.run(
             "source ~/anaconda3/etc/profile.d/conda.sh && conda deactivate && "
             "cd ~/hand_3g/src/DELTO_ROS2/delto_3f_driver/delto_3f_driver && "
@@ -24,7 +24,7 @@ while True:
             shell=True,
             executable="/bin/bash",
         )
-        time.sleep(0.01)
+        time.sleep(1)
         subprocess.run(
             "source ~/anaconda3/etc/profile.d/conda.sh && conda deactivate && "
             "cd ~/hand_3g/src/DELTO_ROS2/delto_3f_driver/delto_3f_driver && "
@@ -32,12 +32,11 @@ while True:
             shell=True,
             executable="/bin/bash",
         )
-        time.sleep(0.01)
-        print("[Hand] grasp_spoon_finish")
-        sock.sendto(b"grasp_spoon_finish_hand", (UDP_IP, MAIN_PORT))
+        time.sleep(0.1)
+        sock.sendto(b"m6", (UDP_IP, MAIN_PORT))
 
-    elif msg == "grasp_comoral_start_main":
-        print("[Hand] grasp_comoral_start")
+    elif msg == "c2_hand": # grasp_comoral_start_main
+        print("[Hand] c2_hand")
         subprocess.run(
             "source ~/anaconda3/etc/profile.d/conda.sh && conda deactivate && "
             "cd ~/hand_3g/src/DELTO_ROS2/delto_3f_driver/delto_3f_driver && "
@@ -45,7 +44,7 @@ while True:
             shell=True,
             executable="/bin/bash",
         )
-        time.sleep(0.01)
+        time.sleep(1)
         subprocess.run(
             "source ~/anaconda3/etc/profile.d/conda.sh && conda deactivate && "
             "cd ~/hand_3g/src/DELTO_ROS2/delto_3f_driver/delto_3f_driver && "
@@ -53,12 +52,11 @@ while True:
             shell=True,
             executable="/bin/bash",
         )
-        time.sleep(0.01)
-        print("[Hand] grasp_comoral_finish")
-        sock.sendto(b"grasp_comoral_finish_hand", (UDP_IP, MAIN_PORT))
+        time.sleep(1)
+        sock.sendto(b"c3", (UDP_IP, MAIN_PORT))
 
-    elif msg == "release_comoral_start_main":
-        print("[Hand] release_comoral_start")
+    elif msg == "c6_hand": # release_comoral_start_main
+        print("[Hand] c6_hand")
         subprocess.run(
             "source ~/anaconda3/etc/profile.d/conda.sh && conda deactivate && "
             "cd ~/hand_3g/src/DELTO_ROS2/delto_3f_driver/delto_3f_driver && "
@@ -66,16 +64,15 @@ while True:
             shell=True,
             executable="/bin/bash",
         )
-        time.sleep(0.01)
-        print("[Hand] release_comoral_finish")
-        sock.sendto(b"release_comoral_finish_hand", (UDP_IP, MAIN_PORT))
+        time.sleep(1)
+        sock.sendto(b"c7", (UDP_IP, MAIN_PORT))
 
 ################# Brush finish #############################
 
 ################# Reposition start #########################
 
-    elif msg == "cushion_before_main":
-        print("[Hand] cushion_before_start")
+    elif msg == "r1_hand": # cushion_before_main
+        print("[Hand] r1_hand")
         subprocess.run(
             "source ~/anaconda3/etc/profile.d/conda.sh && conda deactivate && "
             "cd ~/hand_3g/src/DELTO_ROS2/delto_3f_driver/delto_3f_driver && "
@@ -83,20 +80,10 @@ while True:
             shell=True,
             executable="/bin/bash",
         )
-        time.sleep(0.01)
-        print("[Hand] cushion_before_finish")
-        sock.sendto(b"cushion_before_finish_hand", (UDP_IP, MAIN_PORT))
+        time.sleep(1)
 
-    elif msg == "grasp_cushion1_start_main":
-        print("[Hand] grasp_cushion1_start")
-        subprocess.run(
-            "source ~/anaconda3/etc/profile.d/conda.sh && conda deactivate && "
-            "cd ~/hand_3g/src/DELTO_ROS2/delto_3f_driver/delto_3f_driver && "
-            "python comoral_grasp1.py",
-            shell=True,
-            executable="/bin/bash",
-        )
-        time.sleep(1.5)
+    elif msg == "r2_hand": # grasp_cushion1_start_main
+        print("[Hand] r2_hand")
         subprocess.run(
             "source ~/anaconda3/etc/profile.d/conda.sh && conda deactivate && "
             "cd ~/hand_3g/src/DELTO_ROS2/delto_3f_driver/delto_3f_driver && "
@@ -104,12 +91,12 @@ while True:
             shell=True,
             executable="/bin/bash",
         )
-        time.sleep(0.01)
-        print("[Hand] grasp_cushion1_finish")
-        sock.sendto(b"grasp_cushion1_finish_hand", (UDP_IP, MAIN_PORT))
+        time.sleep(1)
+        sock.sendto(b"r3", (UDP_IP, MAIN_PORT))
 
-    elif msg == "release_cushion1_start_main":
-        print("[Hand] release_cushion1_start")
+
+    elif msg == "r4_hand": # release_cushion1_start_main
+        print("[Hand] r4_hand")
         subprocess.run(
             "source ~/anaconda3/etc/profile.d/conda.sh && conda deactivate && "
             "cd ~/hand_3g/src/DELTO_ROS2/delto_3f_driver/delto_3f_driver && "
@@ -117,20 +104,11 @@ while True:
             shell=True,
             executable="/bin/bash",
         )
-        time.sleep(0.01)
-        print("[Hand] release_cushion1_finish")
-        sock.sendto(b"release_cushion1_finish_hand", (UDP_IP, MAIN_PORT))
+        time.sleep(1)
+        sock.sendto(b"r5", (UDP_IP, MAIN_PORT))
 
-    elif msg == "grasp_cushion2_start_main":
-        print("[Hand] grasp_cushion2_start")
-        subprocess.run(
-            "source ~/anaconda3/etc/profile.d/conda.sh && conda deactivate && "
-            "cd ~/hand_3g/src/DELTO_ROS2/delto_3f_driver/delto_3f_driver && "
-            "python comoral_grasp1.py",
-            shell=True,
-            executable="/bin/bash",
-        )
-        time.sleep(1.5)
+    elif msg == "r6_hand": # grasp_cushion2_start_main
+        print("[Hand] r6_hand")
         subprocess.run(
             "source ~/anaconda3/etc/profile.d/conda.sh && conda deactivate && "
             "cd ~/hand_3g/src/DELTO_ROS2/delto_3f_driver/delto_3f_driver && "
@@ -138,12 +116,11 @@ while True:
             shell=True,
             executable="/bin/bash",
         )
-        time.sleep(0.01)
-        print("[Hand] grasp_cushion2_finish")
-        sock.sendto(b"grasp_cushion2_finish_hand", (UDP_IP, MAIN_PORT))
+        time.sleep(1)
+        sock.sendto(b"r7", (UDP_IP, MAIN_PORT))
 
-    elif msg == "release_cushion2_start_main":
-        print("[Hand] release_cushion2_start")
+    elif msg == "r8_hand": # release_cushion2_start_main
+        print("[Hand] r8_hand")
         subprocess.run(
             "source ~/anaconda3/etc/profile.d/conda.sh && conda deactivate && "
             "cd ~/hand_3g/src/DELTO_ROS2/delto_3f_driver/delto_3f_driver && "
@@ -151,6 +128,5 @@ while True:
             shell=True,
             executable="/bin/bash",
         )
-        time.sleep(0.01)
-        print("[Hand] release_cushion2_finish")
-        sock.sendto(b"release_cushion2_finish_hand", (UDP_IP, MAIN_PORT))
+        time.sleep(1)
+        sock.sendto(b"r9", (UDP_IP, MAIN_PORT))

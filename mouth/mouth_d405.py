@@ -6,10 +6,6 @@
 ###############################################
 #py3_10/window
 #py310/linux
-import os
-# Force Open3D into CPU rendering; avoids GPU/OpenGL crashes on machines without a GPU.
-os.environ.setdefault("OPEN3D_CPU_RENDERING", "true")
-os.environ.setdefault("OPEN3D_RENDERING_DEVICE", "cpu")
 import time    
 import open3d as o3d
 import open3d.visualization.gui as gui
@@ -64,10 +60,12 @@ o3d_intr = o3d.camera.PinholeCameraIntrinsic(
 )
     
 # Pose estimation setup
+device = 'mps'  # 'cuda' or 'mps' if available
+# device = 'cuda'  # 'cuda' or 'mps' if available
 backend = 'onnxruntime'
 openpose_skeleton = False
-# Default to CPU; override by setting RTM_DEVICE to 'cuda' or 'mps' if available.
-device = os.environ.get("RTM_DEVICE", "cpu")
+# wholebody = Wholebody(to_openpose=openpose_skeleton,
+#                       mode='lightweight')
 wholebody = Wholebody(to_openpose=openpose_skeleton,
                       mode='lightweight',
                       backend=backend,
@@ -171,7 +169,9 @@ class RealSenseSceneApp:
                     new_pcd = o3d.geometry.PointCloud.create_from_rgbd_image(rgbd_image, self.o3d_intr)
 
                     # Run wholebody detector on the color image (your function)
+                    print('use model')
                     keypoints, scores = wholebody(color_image)
+                    print('model used')
 
                     # Convert 2D keypoints to 3D using depth and intrinsics
                     keypoints_3d = keypoints_2d_to_3d_open3d(keypoints[0], depth_image, self.o3d_intr)

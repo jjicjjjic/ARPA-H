@@ -23,6 +23,12 @@ int main() {
     // robot.set_speed_bar(rc, 0.05);
     robot.flush(rc);
 
+    std::array<double, 6> jnt = {109, 8, -41, -29, -77, 56};  // 요기에 default pose 정해지면 입력하기!
+    robot.move_j(rc, jnt, 60, 80);
+    rc.error().throw_if_not_empty();
+
+    std::this_thread::sleep_for(std::chrono::seconds(8));
+
     // (4) CSV 파일 열기
     std::ifstream file("/home/nrel/ARPA-H/rbmove_jh/kjh/data/meal_onetake/d_s.csv");
     if (!file.is_open()) {
