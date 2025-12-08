@@ -17,7 +17,7 @@ int main() {
     robot.set_operation_mode(rc, podo::OperationMode::Real);
     rc.error().throw_if_not_empty();
 
-    robot.set_speed_bar(rc, 0.7);
+    robot.set_speed_bar(rc, 0.8);
     robot.flush(rc);
 
     std::array<double, 6> tcp_pose = {262, -394, 808, 86, 0, 16};  // 요기에 Fix pose 정해지면 입력하기!

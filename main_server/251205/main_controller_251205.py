@@ -44,8 +44,8 @@ class RobotGUI:
         #     print(f"[Arduino] Serial connection failed: {e}")
 
         try:
-            self.arduino_UI = serial.Serial('/dev/ttyUSB1', 115200, timeout=0.1)
-            print("[Arduino MAIN] connected: /dev/ttyUSB1")
+            self.arduino_UI = serial.Serial('/dev/ttyUSB0', 115200, timeout=0.1)
+            print("[Arduino MAIN] connected: /dev/ttyUSB0")
         except:
             self.arduino_UI = None
 
@@ -151,13 +151,13 @@ class RobotGUI:
             self.countdown(6)
 
         elif cmd == "m7": # cmd == "move_to_food1_finish_arm" and self.task_mode == "meal":
-            self.countdown(6)
+            self.countdown(3)
             self.start_next("arm", "m7_sound") # chewing_sound
             self.countdown(6)
 
         elif cmd == "m8": # cmd == "chewing_sound_finish_arm" and self.chewing_start_num == 1 and self.food_num == 1:
             self.start_next("arm", "m8_arm") # move_from_food1_to_fix_start_main
-            self.countdown(0.01)
+            self.countdown(3)
 
         elif cmd == "m9": # cmd == "move_from_food1_to_fix_finish_arm" and self.task_mode == "meal":
             self.start_next("arm", "m9_arm") # move_to_food2_start_main
@@ -241,14 +241,23 @@ class RobotGUI:
         elif cmd == "m28": # cmd == "chewing_sound_finish_arm" and self.chewing_start_num == 6 and self.food_num == 6:
             self.countdown(5)
             self.start_next("arm", "m28_arm") # move_from_mouth6_to_fix_start_main
-            self.countdown(0.01)
+            self.countdown(1)
 
         elif cmd == "m29" or cmd == "button2_off": # cmd == "button2_off" and self.task_mode == "meal":
             subprocess.run([os.path.expanduser("~/ccmedia/ccmedia_R03")], check=True)
             self.start_next("arm", "m29_sound") # move_from_food_to_default_arm_start_main
             self.countdown(1.5)
             self.start_next("arm", "m29_arm") # meal_finish_sound
-            self.countdown(0.01)
+            self.countdown(4)
+
+        elif cmd == "m30": # cmd == "move_to_spoon_finish_arm" and self.task_mode == "meal":
+            self.start_next("hand", "m30_hand") # grasp_spoon_start_main
+            self.countdown(1)
+
+        elif cmd == "m31": # cmd == "chewing_sound_finish_arm" and self.chewing_start_num == 6 and self.food_num == 6:
+            self.countdown(3)
+            self.start_next("arm", "m31_arm") # move_from_mouth6_to_fix_start_main
+            self.countdown(5)
 
 ######################################################
         elif cmd == "chewing_start_outside":
@@ -270,18 +279,18 @@ class RobotGUI:
             self.start_next("arm", "c1_sound") # brush_start_sound
             self.countdown(2)
             self.start_next("arm", "c1_arm") # move_from_default_to_comoral_start_main
-            self.countdown(2)
+            self.countdown(5)
 
         elif cmd == "c2": # cmd == "move_from_default_to_comoral_finish_arm" and self.task_mode == "brush":
             self.start_next("hand", "c2_hand") # grasp_comoral_start_main
-            self.countdown(1)
+            self.countdown(3)
 
         elif cmd == "c3": # cmd == "grasp_comoral_finish_hand" and self.task_mode == "brush":
             self.start_next("arm", "c3_arm") # move_cormal_to_mouth_start_main
-            self.countdown(2)
+            # self.countdown(2)
 
         elif cmd == "c4": # cmd == "move_cormal_to_mouth_finish_arm" and self.task_mode == "brush":
-            self.countdown(5)
+            # self.countdown(5)
             self.start_next("arm", "c4_sound") # bite_cormal_sound
             self.countdown(2)
 
@@ -290,7 +299,7 @@ class RobotGUI:
             self.start_next("arm", "c5_sound") # brush_finish_sound           
             self.countdown(2)
             self.start_next("arm", "c5_arm") # move_from_mouth_to_comoral_start_main
-            self.countdown(2)
+            self.countdown(1)
 
         elif cmd == "c6": # cmd == "move_from_mouth_to_comoral_finish_arm" and self.task_mode == "brush":
             self.start_next("hand", "c6_hand") # release_comoral_start_main
@@ -314,7 +323,7 @@ class RobotGUI:
             self.start_next("arm", "r1_arm") # move_from_default_to_cushion1_start_main
             self.countdown(1)                
 
-        elif cmd == "r2": # cmd == "move_from_default_to_cushion1_finish_arm" and self.vision_reposition == 1 and self.task_mode == "reposition":
+        elif cmd == "r2": # cmd == "lying sideways": # cmd == "move_from_default_to_cushion1_finish_arm" and self.vision_reposition == 1 and self.task_mode == "reposition":
             self.start_next("hand", "r2_hand") # grasp_cushion1_start_main
             self.countdown(1)
 
@@ -386,7 +395,7 @@ class RobotGUI:
         elif cmd == "f1": # self.vision_fall_start == 1 and self.task_mode == "fall":
             subprocess.run([os.path.expanduser("~/ccmedia/ccmedia_R16")], check=True)
             self.start_next("arm", "f1_sound") # move_to_bed_start_sound
-            # self.arduino_UI.write(b"button1_on_pc\n")         
+            self.arduino_UI.write(b"button1_on_pc\n")         
             self.countdown(0.01)
             self.start_next("mobile", "f1_mobile") # move_to_gap1_start_main
             self.countdown(0.01)
@@ -416,6 +425,9 @@ class RobotGUI:
 ######################################################
         elif cmd == "Body_extruded":
             print("Body_extruded success")
+
+        # elif cmd == "lying sideways":
+        #     print("lying sideways success")
 ######################################################
 
 ################################################################

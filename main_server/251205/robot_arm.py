@@ -55,7 +55,7 @@ while True:
         print("[Arm] m4_arm")
         arm_path = os.path.expanduser("/home/nrel/ARPA-H/rbmove_jh/build/m0_default_spoon") 
         subprocess.run([arm_path], check=True)
-        time.sleep(3)
+        time.sleep(1)
         sock.sendto(b"m5", (UDP_IP, MAIN_PORT))
 
     # ---------------------------- repeat 1 --------------------------------------------------------------
@@ -64,10 +64,10 @@ while True:
         print("[Arm] m6_arm")
         arm_path = os.path.expanduser("/home/nrel/ARPA-H/rbmove_jh/build/m1_spoon_food1")
         subprocess.run([arm_path], check=True)
-        time.sleep(6)
-        arm_path = os.path.expanduser("/home/nrel/ARPA-H/rbmove_jh/build/m2")
+        time.sleep(3)
+        arm_path = os.path.expanduser("/home/nrel/ARPA-H/rbmove_jh/build/m5_mouthfix")
         subprocess.run([arm_path], check=True)
-        time.sleep(5)
+        time.sleep(3)
         sock.sendto(b"m7", (UDP_IP, MAIN_PORT))
 
     elif msg.startswith("m7_sound"): # chewing_sound
@@ -81,13 +81,15 @@ while True:
 
     elif msg.startswith("m8_arm"): # move_from_food1_to_fix_start_main
         print("[Arm] m8_arm")
-        arm_path = os.path.expanduser("/home/nrel/ARPA-H/rbmove_jh/build/m3_mouth_fix")
+        time.sleep(5)
+        arm_path = os.path.expanduser("/home/nrel/ARPA-H/rbmove_jh/build/m6_mouth_fix")
         subprocess.run([arm_path], check=True)
         time.sleep(6)
         sock.sendto(b"m9", (UDP_IP, MAIN_PORT))
 
     elif msg.startswith("m9_arm"): # move_to_food2_start_main
         print("[Arm] m9_arm")
+        time.sleep(1)
         arm_path = os.path.expanduser("/home/nrel/ARPA-H/rbmove_jh/build/m4_fix_food2")
         subprocess.run([arm_path], check=True)
         time.sleep(3)
@@ -111,6 +113,7 @@ while True:
 
     elif msg.startswith("m12_arm"): # move_from_mouth2_to_fix_start_main
         print("[Arm] m12_arm")
+        time.sleep(5)
         arm_path = os.path.expanduser("/home/nrel/ARPA-H/rbmove_jh/build/m6_mouth_fix")
         subprocess.run([arm_path], check=True)
         time.sleep(5)
@@ -118,6 +121,7 @@ while True:
 
     elif msg.startswith("m13_arm"): # move_to_food3_start_main
         print("[Arm] m13_arm")
+        time.sleep(1)
         arm_path = os.path.expanduser("/home/nrel/ARPA-H/rbmove_jh/build/m7_fix_food3")
         subprocess.run([arm_path], check=True)
         time.sleep(3)
@@ -132,7 +136,7 @@ while True:
 
     elif msg.startswith("m15_sound"): # chewing_sound
         print("[Arm] m15_sound")
-        time.sleep(5)
+        time.sleep(3)
         arm_path = os.path.expanduser("/home/nrel/ARPA-H/rbmove_jh/build/Meal_pleaseeat") 
         subprocess.run([arm_path], check=True)
         time.sleep(1)
@@ -145,7 +149,7 @@ while True:
         arm_path = os.path.expanduser("/home/nrel/ARPA-H/rbmove_jh/build/m9_mouth_fix")
         subprocess.run([arm_path], check=True)
         time.sleep(5)
-        sock.sendto(b"m17", (UDP_IP, MAIN_PORT))
+        # sock.sendto(b"m17", (UDP_IP, MAIN_PORT))
 
     elif msg.startswith("m17_arm"): # move_to_food4_start_main
         print("[Arm] move_m17_arm")
@@ -243,12 +247,18 @@ while True:
         arm_path = os.path.expanduser("/home/nrel/ARPA-H/rbmove_jh/build/m11_fix_spoon")
         subprocess.run([arm_path], check=True)
         time.sleep(2)
+        sock.sendto(b"m30", (UDP_IP, MAIN_PORT))
 
     elif msg.startswith("m29_sound"): # meal_finish_sound
         print("[Arm] m29_sound")
         arm_path = os.path.expanduser("/home/nrel/ARPA-H/rbmove_jh/build/Meal_done") 
         subprocess.run([arm_path], check=True)
         time.sleep(1)
+
+    elif msg.startswith("m31_arm"): # move_from_mouth6_to_fix_start_main
+        arm_path = os.path.expanduser("/home/nrel/ARPA-H/rbmove_jh/build/m12_spoon_default")
+        subprocess.run([arm_path], check=True)
+        time.sleep(2)
 
 ##################### Meal finish ############################
 
@@ -265,19 +275,19 @@ while True:
         print("[Arm] c1_arm")
         arm_path = os.path.expanduser("/home/nrel/ARPA-H/rbmove_jh/build/c1_default_comoral")
         subprocess.run([arm_path], check=True)
-        time.sleep(3)
+        time.sleep(5)
         sock.sendto(b"c2", (UDP_IP, MAIN_PORT))
 
     elif msg.startswith("c3_arm"): # move_cormal_to_mouth_start_main
         print("[Arm] c3_arm")
-        arm_path = os.path.expanduser("/home/nrel/ARPA-H/rbmove_jh/build/c3")
+        arm_path = os.path.expanduser("/home/nrel/ARPA-H/rbmove_jh/build/c2_comoral_mouth")
         subprocess.run([arm_path], check=True)
-        time.sleep(3)
+        # time.sleep(3)
         sock.sendto(b"c4", (UDP_IP, MAIN_PORT))
 
     elif msg.startswith("c4_sound"): # bite_cormal_sound
         print("[Arm] c4_sound")
-        time.sleep(8)
+        # time.sleep(2)
         arm_path = os.path.expanduser("/home/nrel/ARPA-H/rbmove_jh/build/Brushing_bitewaterlet") 
         subprocess.run([arm_path], check=True)
         time.sleep(1)
@@ -292,20 +302,20 @@ while True:
         print("[Arm] c5_arm")
         arm_path = os.path.expanduser("/home/nrel/ARPA-H/rbmove_jh/build/c4_mouth_fix")
         subprocess.run([arm_path], check=True)
-        time.sleep(1)
+        time.sleep(7)
         arm_path = os.path.expanduser("/home/nrel/ARPA-H/rbmove_jh/build/c5_fix_comoral")
         subprocess.run([arm_path], check=True)
-        time.sleep(1)
+        time.sleep(2)
         sock.sendto(b"c6", (UDP_IP, MAIN_PORT))
 
     elif msg.startswith("c7_arm"): # move_from_comoral_to_default_start_main
         print("[Arm] c7_arm")
         arm_path = os.path.expanduser("/home/nrel/ARPA-H/rbmove_jh/build/c6_comoral_default")
         subprocess.run([arm_path], check=True)
-        time.sleep(3)
-        arm_path = os.path.expanduser("/home/nrel/ARPA-H/rbmove_jh/build/default_move")
-        subprocess.run([arm_path], check=True)
-        time.sleep(1)
+        time.sleep(5)
+        # arm_path = os.path.expanduser("/home/nrel/ARPA-H/rbmove_jh/build/default_move")
+        # subprocess.run([arm_path], check=True)
+        # time.sleep(1)
 
 ####################### Brush finish #########################
 

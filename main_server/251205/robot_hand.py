@@ -17,14 +17,14 @@ while True:
 
     if msg == "m5_hand": # grasp_spoon_start_main
         print("[Hand] m5_hand")
-        subprocess.run(
-            "source ~/anaconda3/etc/profile.d/conda.sh && conda deactivate && "
-            "cd ~/hand_3g/src/DELTO_ROS2/delto_3f_driver/delto_3f_driver && "
-            "python comoral_grasp1.py",
-            shell=True,
-            executable="/bin/bash",
-        )
-        time.sleep(1)
+        # subprocess.run(
+        #     "source ~/anaconda3/etc/profile.d/conda.sh && conda deactivate && "
+        #     "cd ~/hand_3g/src/DELTO_ROS2/delto_3f_driver/delto_3f_driver && "
+        #     "python comoral_grasp1.py",
+        #     shell=True,
+        #     executable="/bin/bash",
+        # )
+        # time.sleep(1)
         subprocess.run(
             "source ~/anaconda3/etc/profile.d/conda.sh && conda deactivate && "
             "cd ~/hand_3g/src/DELTO_ROS2/delto_3f_driver/delto_3f_driver && "
@@ -32,8 +32,20 @@ while True:
             shell=True,
             executable="/bin/bash",
         )
-        time.sleep(0.1)
+        time.sleep(1)
         sock.sendto(b"m6", (UDP_IP, MAIN_PORT))
+
+    elif msg == "m30_hand": # grasp_spoon_start_main
+        print("[Hand] m5_hand")
+        subprocess.run(
+            "source ~/anaconda3/etc/profile.d/conda.sh && conda deactivate && "
+            "cd ~/hand_3g/src/DELTO_ROS2/delto_3f_driver/delto_3f_driver && "
+            "python cushion_before.py",
+            shell=True,
+            executable="/bin/bash",
+        )
+        time.sleep(1)
+        sock.sendto(b"m31", (UDP_IP, MAIN_PORT))
 
     elif msg == "c2_hand": # grasp_comoral_start_main
         print("[Hand] c2_hand")
@@ -60,7 +72,7 @@ while True:
         subprocess.run(
             "source ~/anaconda3/etc/profile.d/conda.sh && conda deactivate && "
             "cd ~/hand_3g/src/DELTO_ROS2/delto_3f_driver/delto_3f_driver && "
-            "python default.py",
+            "python cushion_before.py",
             shell=True,
             executable="/bin/bash",
         )

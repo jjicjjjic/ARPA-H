@@ -13,21 +13,21 @@ int main() {
     podo::Cobot robot("10.0.2.7");
     podo::ResponseCollector rc;
 
-    robot.set_operation_mode(rc, podo::OperationMode::Simulation);
-    // robot.set_operation_mode(rc, podo::OperationMode::Real);
+    // robot.set_operation_mode(rc, podo::OperationMode::Simulation);
+    robot.set_operation_mode(rc, podo::OperationMode::Real);
     rc.error().throw_if_not_empty();
 
     robot.set_speed_bar(rc, 0.7);
     robot.flush(rc);
 
 
-    std::array<double, 6> tcp_pose = {407.07, -365.94, 783.60, 83.51, -3.92, 97.4};  // 요기에 Fix pose 정해지면 입력하기!
-    robot.move_l(rc, tcp_pose, 100, 100);
+    std::array<double, 6> tcp_pose = {410.79, -367.60, 770.65, 89.36, 3.42, 88.96};  // 요기에 Fix pose 정해지면 입력하기!
+    robot.move_l(rc, tcp_pose, 70, 100);
     rc.error().throw_if_not_empty();
 
-    std::this_thread::sleep_for(std::chrono::seconds(5));
+    std::this_thread::sleep_for(std::chrono::seconds(3));
 
-    std::array<double, 6> jnt = {84.05, 0, 41.75, 49.05, 90.13, -83.90};  // 요기에 Fix pose 정해지면 입력하기!
+    std::array<double, 6> jnt = {84, 0, 41, 49, 90, -83};  // 요기에 Fix pose 정해지면 입력하기!
     robot.move_j(rc, jnt, 60, 80);
     rc.error().throw_if_not_empty();
 

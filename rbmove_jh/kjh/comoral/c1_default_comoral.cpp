@@ -95,16 +95,9 @@ int main() {
     robot.set_speed_bar(rc, 0.3);
     robot.flush(rc);
 
-    std::array<double, 6> jnt = {27.49, 11.55, 88.24, -10.53, 95.81, -35.18};  // 요기에 Fix pose 정해지면 입력하기!
+    std::array<double, 6> jnt = {68, -6, 88.24, 6.89, 105, -79.18};  // 요기에 Fix pose 정해지면 입력하기!
     robot.move_j(rc, jnt, 60, 80);
     rc.error().throw_if_not_empty();
-
-    std::this_thread::sleep_for(std::chrono::seconds(7));
-
-    std::array<double, 6> pnt = {564.48, 179.45, 410.66, 92.63, -5.01, 82.26};  // 요기에 Fix pose 정해지면 입력하기!
-    robot.move_l(rc, pnt, 60, 80);
-    rc.error().throw_if_not_empty();
-
 
     std::cout << "default 자세 완료" << std::endl;
 

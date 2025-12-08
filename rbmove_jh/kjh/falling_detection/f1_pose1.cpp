@@ -20,51 +20,22 @@ int main() {
     rc.error().throw_if_not_empty();
 
     // (3) 속도 설정
-    // robot.set_speed_bar(rc, 0.05);
+    robot.set_speed_bar(rc, 0.6);
     robot.flush(rc);
 
-    // (4) CSV 파일 열기
-    std::ifstream file("/home/nrel/ARPA-H/rbmove_jh/kjh/data/fall/fp1.csv");
-    if (!file.is_open()) {
-      std::cerr << "CSV 파일을 열 수 없습니다!" << std::endl;
-      return 1;
-    }
+    std::array<double, 6> jnt = {-62, 14, 95, 68, 6, 40};  // 요기에 default pose 정해지면 입력하기!
+    robot.move_j(rc, jnt, 60, 80);
+    rc.error().throw_if_not_empty();
 
-    std::string line;
-    bool first_line = true;
+    std::this_thread::sleep_for(std::chrono::seconds(20));
 
-    while (std::getline(file, line)) {
-      if (first_line) { 
-        first_line = false; 
-        continue;
-      }
+    std::array<double, 6> jnt2 = {-12.5, 14, 95, 68, -12, 40};  // 요기에 default pose 정해지면 입력하기!
+    robot.move_j(rc, jnt2, 60, 80);
+    rc.error().throw_if_not_empty();
 
-      std::stringstream ss(line);
-      std::string token;
-      std::array<double, 6> tcp_pose{};
-      int idx = 0;
-      std::getline(ss, token, ',');
-      while (std::getline(ss, token, ',') && idx < 6) {
-        tcp_pose[idx++] = std::stod(token);
-      }
+    
 
-      if (idx == 6) {
-        std::cout << "Moving to TCP pose: [";
-        for (int i = 0; i < 6; ++i) {
-          std::cout << tcp_pose[i];
-          if (i < 5) std::cout << ", ";
-        }
-        std::cout << "]" << std::endl;
-
-        robot.move_servo_l(rc, tcp_pose, 0.05, 0.05, 1, 0.07);
-        // robot.move_servo_l(rc, tcp_pose, 0.3, 0.05, 1, 0.05);
-        std::this_thread::sleep_for(std::chrono::milliseconds(30));
-        rc.error().throw_if_not_empty();
-
-      }
-    }
-
-    std::cout << "CSV 파일 기반 궤적 재생 완료!" << std::endl;
+   
 
   } catch (const std::exception& e) {
     std::cerr << e.what() << std::endl;

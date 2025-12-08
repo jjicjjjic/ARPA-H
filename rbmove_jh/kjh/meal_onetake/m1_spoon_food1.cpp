@@ -24,7 +24,7 @@ int main() {
     robot.flush(rc);
 
     // (4) CSV 파일 열기
-    std::ifstream file("/home/nrel/ARPA-H/rbmove_jh/kjh/data/meal_onetake/s_f1.csv");
+    std::ifstream file("/home/nrel/ARPA-H/rbmove_jh/kjh/data/meal_onetake/s_f1_side.csv");
     if (!file.is_open()) {
       std::cerr << "CSV 파일을 열 수 없습니다!" << std::endl;
       return 1;
